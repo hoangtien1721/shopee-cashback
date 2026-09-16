@@ -26,6 +26,9 @@ function seedDatabase() {
     console.log('✅ Seeded admin: admin@cashback.vn / admin123');
   }
 
+  // Đảm bảo tài khoản chủ sàn hoangtien1721@gmail.com luôn có quyền admin
+  db.prepare("UPDATE users SET role = 'admin' WHERE email = 'hoangtien1721@gmail.com'").run();
+
   // 2. Kiểm tra tài khoản Demo User
   let demoUser = db.prepare('SELECT id FROM users WHERE email = ?').get('user@cashback.vn');
   let demoUserId;
