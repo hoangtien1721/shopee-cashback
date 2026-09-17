@@ -553,7 +553,7 @@ async function testShopeeApi(req, res) {
     const appId = req.body.shopee_app_id || getSetting('shopee_app_id');
     const appSecret = req.body.shopee_app_secret || getSetting('shopee_app_secret');
     const shopeeCookie = req.body.shopee_cookie || getSetting('shopee_cookie');
-    const partnerId = req.body.shopee_affiliate_id || getSetting('shopee_affiliate_id', 'viva_cashback');
+    const partnerId = req.body.shopee_affiliate_id || getSetting('shopee_affiliate_id', 'partner_cashback');
 
     // 1. Nếu có Shopee Cookie -> Thử gọi internal GraphQL API
     if (shopeeCookie) {

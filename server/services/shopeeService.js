@@ -185,7 +185,7 @@ async function generateAffiliateLink({ originUrl, userId, shortCode }) {
   }
 
   // 3. Chế độ Universal Affiliate Link (gắn Affiliate ID trực tiếp - Hoạt động 100% không cần Open API)
-  const affiliateId = getSetting('shopee_affiliate_id', 'viva_cashback');
+  const affiliateId = getSetting('shopee_affiliate_id', 'partner_cashback');
   const encodedOrigin = encodeURIComponent(originUrl);
   
   // Format link redirect affiliate Shopee với sub_id

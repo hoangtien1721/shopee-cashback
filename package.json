@@ -10,7 +10,7 @@
     "dev:client": "cd client && npm run dev"
   },
   "keywords": ["shopee", "cashback", "affiliate", "vietqr"],
-  "author": "VIVA Business Consulting",
+  "author": "Shopee Cashback Platform",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.3",
