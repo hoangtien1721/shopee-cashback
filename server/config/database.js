@@ -41,6 +41,10 @@ function initDb() {
       affiliate_url TEXT NOT NULL,
       short_code TEXT UNIQUE NOT NULL,
       product_title TEXT DEFAULT '',
+      product_image TEXT DEFAULT '',
+      product_price INTEGER DEFAULT 0,
+      estimated_cashback INTEGER DEFAULT 0,
+      category_name TEXT DEFAULT '',
       clicks_count INTEGER DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES users(id)
@@ -85,6 +89,12 @@ function initDb() {
       description TEXT DEFAULT ''
     );
   `);
+
+  // Safe column migrations for existing tables
+  try { db.exec("ALTER TABLE converted_links ADD COLUMN product_image TEXT DEFAULT ''"); } catch(e){}
+  try { db.exec("ALTER TABLE converted_links ADD COLUMN product_price INTEGER DEFAULT 0"); } catch(e){}
+  try { db.exec("ALTER TABLE converted_links ADD COLUMN estimated_cashback INTEGER DEFAULT 0"); } catch(e){}
+  try { db.exec("ALTER TABLE converted_links ADD COLUMN category_name TEXT DEFAULT ''"); } catch(e){}
 
   // Default settings
   const insertSetting = db.prepare(`

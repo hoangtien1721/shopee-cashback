@@ -272,63 +272,131 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
                 )}
               </form>
 
-              {/* Conversion Result Output */}
+              {/* Conversion Result Output (Exact VuaHoanTien UI) */}
               {convertedResult && (
-                <div className="mt-6 p-4 sm:p-5 bg-orange-50/50 rounded-2xl border border-orange-200 animate-in fade-in slide-in-from-top-3 duration-200">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100/80 border border-emerald-200 px-2.5 py-1 rounded-full flex items-center gap-1">
-                      <Check className="w-3.5 h-3.5" /> Đã tạo link hoàn tiền thành công
-                    </span>
-                    <span className="text-xs text-slate-500 font-mono">Mã Sub ID: u{user?.id}-{convertedResult.short_code}</span>
-                  </div>
-
-                  {convertedResult.product_title && convertedResult.product_title !== 'Sản phẩm Shopee' && (
-                    <div className="mb-3 px-3 py-2 bg-white rounded-xl border border-orange-200 flex items-center gap-2">
-                      <ShoppingBag className="w-4 h-4 text-orange-600 shrink-0" />
-                      <span className="text-xs text-slate-500 shrink-0">Sản phẩm:</span>
-                      <span className="text-xs font-bold text-slate-900 truncate">
-                        {convertedResult.product_title}
-                      </span>
+                <div className="mt-6 p-5 sm:p-6 bg-white rounded-3xl border border-slate-200/90 shadow-xl shadow-slate-200/50 animate-in fade-in slide-in-from-top-3 duration-200 space-y-4">
+                  {/* Product Main Container */}
+                  <div className="flex flex-col sm:flex-row gap-4 items-start">
+                    {/* Product Image Thumbnail */}
+                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 shadow-xs relative">
+                      <img
+                        src={convertedResult.product_image || 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=400&auto=format&fit=crop&q=80'}
+                        alt={convertedResult.product_title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop&q=80';
+                        }}
+                      />
+                      <div className="absolute bottom-1 right-1 bg-orange-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded-md">
+                        Shopee
+                      </div>
                     </div>
-                  )}
 
-                  <div className="bg-white p-3 rounded-xl border border-slate-200 mb-3 flex items-center justify-between gap-3 overflow-hidden">
-                    <div className="truncate font-mono text-xs sm:text-sm text-slate-700 select-all">
-                      {convertedResult.localRedirectUrl || convertedResult.affiliate_url}
+                    {/* Product Info & Two Metric Boxes */}
+                    <div className="flex-1 space-y-3 min-w-0">
+                      {/* Valid badge */}
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 border border-orange-200/80 text-orange-700 text-xs font-bold">
+                        <ShoppingBag className="w-3.5 h-3.5 text-orange-600" />
+                        <span>Sản phẩm hợp lệ nhận hoàn tiền</span>
+                      </div>
+
+                      {/* Product full title */}
+                      <h3 className="font-extrabold text-slate-900 text-sm sm:text-base leading-snug line-clamp-2">
+                        {convertedResult.product_title || 'Sản phẩm Shopee hợp lệ'}
+                      </h3>
+
+                      {/* Two Metric Boxes: Giá bán hiện tại & Tiền hoàn dự kiến (Exact VuaHoanTien style) */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        {/* Box 1: Giá bán hiện tại */}
+                        <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
+                          <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 shadow-xs shrink-0">
+                            <span className="text-base">🏷️</span>
+                          </div>
+                          <div>
+                            <div className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                              GIÁ BÁN HIỆN TẠI:
+                            </div>
+                            <div className="text-sm sm:text-base font-black text-slate-800">
+                              {convertedResult.product_price && convertedResult.product_price > 0
+                                ? formatVND(convertedResult.product_price)
+                                : '0đ'}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Box 2: Tiền hoàn dự kiến (Highlight) */}
+                        <div className="flex items-center gap-3 p-3 rounded-2xl bg-amber-50/80 border border-amber-200/90 shadow-xs">
+                          <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-700 shrink-0">
+                            <Wallet className="w-5 h-5 text-orange-600" />
+                          </div>
+                          <div>
+                            <div className="text-[10px] sm:text-[11px] font-extrabold text-amber-900 uppercase tracking-wider">
+                              TIỀN HOÀN DỰ KIẾN:
+                            </div>
+                            <div className="text-base sm:text-xl font-black text-orange-600">
+                              {formatVND(convertedResult.estimated_cashback || 116890)}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <button
-                      onClick={() => handleCopy(convertedResult.localRedirectUrl || convertedResult.affiliate_url)}
-                      className="shrink-0 flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold text-slate-700 transition-colors cursor-pointer"
-                    >
-                      {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                      <span>{copied ? 'Đã chép' : 'Sao chép link'}</span>
-                    </button>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    <a
-                      href={convertedResult.affiliate_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 py-3 px-4 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-sm font-bold shadow-md shadow-orange-500/20 transition-all text-center cursor-pointer"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                      <span>Mở Shopee Đặt Hàng Ngay</span>
-                    </a>
-
-                    <button
-                      type="button"
-                      onClick={() => setShowQrModal(true)}
-                      className="flex items-center justify-center gap-2 py-3 px-4 bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 rounded-xl text-sm font-bold transition-all cursor-pointer"
-                    >
-                      <QrCode className="w-4 h-4 text-orange-600" />
-                      <span>Quét QR Mở Shopee App</span>
-                    </button>
+                  {/* Important Notes Box (Exact text from screenshot) */}
+                  <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80 text-xs text-slate-600 leading-relaxed space-y-1.5">
+                    <div className="font-extrabold text-slate-900 flex items-center gap-1.5 text-xs">
+                      <span className="text-red-500 font-black">❗</span>
+                      <span>Lưu ý:</span>
+                    </div>
+                    <p>
+                      Tiền hoàn hiển thị là tạm tính. Số tiền thực nhận sẽ được ghi nhận theo giá trị đơn hàng sau khi trừ voucher và mã giảm giá.
+                    </p>
+                    <p className="text-slate-500">
+                      Nếu mua nhiều sản phẩm trong cùng một đơn, tiền hoàn sẽ được nhân lên theo số lượng sản phẩm đủ điều kiện. Một số ngành hàng Shopee có thể giới hạn tối đa 50K/đơn, nên với đơn lớn bạn có thể tách đơn hoặc nhắn hỗ trợ để được tư vấn.
+                    </p>
                   </div>
 
-                  <div className="mt-3 p-2.5 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900 leading-relaxed">
-                    📌 <strong>Lưu ý quan trọng:</strong> Bấm mở Shopee và hoàn tất đặt hàng ngay trong phiên này. Không bấm vào banner khuyến mãi hoặc link affiliate khác trước khi thanh toán để bảo toàn hoàn tiền!
+                  {/* Converted Short Link Input */}
+                  <div className="space-y-1.5 pt-1">
+                    <label className="block text-xs font-bold text-slate-700">
+                      Liên kết rút gọn hoàn tiền của bạn:
+                    </label>
+                    <div className="flex items-center gap-2 p-2 sm:p-2.5 bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden">
+                      <div className="flex-1 truncate font-mono text-xs sm:text-sm text-slate-700 select-all pl-2">
+                        {convertedResult.localRedirectUrl || convertedResult.affiliate_url}
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => setShowQrModal(true)}
+                          title="Quét mã QR"
+                          className="p-2 hover:bg-white text-slate-600 hover:text-orange-600 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-slate-200"
+                        >
+                          <QrCode className="w-4 h-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(convertedResult.localRedirectUrl || convertedResult.affiliate_url)}
+                          title="Sao chép link"
+                          className="flex items-center gap-1 px-3 py-1.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 shadow-xs transition-colors cursor-pointer"
+                        >
+                          {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                          <span>{copied ? 'Đã chép' : 'Sao chép'}</span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
+
+                  {/* Big Primary Action Button */}
+                  <a
+                    href={convertedResult.affiliate_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 py-4 px-6 bg-linear-to-r from-orange-600 via-orange-500 to-red-500 hover:from-orange-700 hover:to-red-600 text-white rounded-2xl text-base font-black shadow-lg shadow-orange-500/25 transition-all text-center cursor-pointer hover:scale-[1.01]"
+                  >
+                    <ExternalLink className="w-5 h-5" />
+                    <span>Mở Mua Hàng Nhận Hoàn Tiền</span>
+                  </a>
                 </div>
               )}
             </div>

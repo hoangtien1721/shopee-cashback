@@ -4,7 +4,8 @@ const {
   sanitizeShopeeUrl,
   extractProductTitle,
   generateShortCode,
-  generateAffiliateLink
+  generateAffiliateLink,
+  analyzeShopeeProduct
 } = require('../services/shopeeService');
 
 async function convertLink(req, res) {
@@ -27,6 +28,9 @@ async function convertLink(req, res) {
     const cleanUrl = sanitizeShopeeUrl(rawUrl);
     const shortCode = generateShortCode(8);
 
+    // Phân tích thông tin sản phẩm và tính toán tiền hoàn dự kiến
+    const productInfo = await analyzeShopeeProduct(rawUrl, product_title);
+
     // Tạo link affiliate có gắn sub_id
     const { affiliateUrl, mode } = await generateAffiliateLink({
       originUrl: cleanUrl,
@@ -37,12 +41,14 @@ async function convertLink(req, res) {
     const host = req.get('host');
     const protocol = req.protocol;
     const localRedirectUrl = `${protocol}://${host}/api/links/go/${shortCode}`;
-    const finalTitle = product_title || extractProductTitle(cleanUrl);
 
     // Lưu vào cơ sở dữ liệu
     const stmt = db.prepare(`
-      INSERT INTO converted_links (user_id, original_url, clean_url, affiliate_url, short_code, product_title)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO converted_links (
+        user_id, original_url, clean_url, affiliate_url, short_code,
+        product_title, product_image, product_price, estimated_cashback, category_name
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     const result = stmt.run(
@@ -51,18 +57,26 @@ async function convertLink(req, res) {
       cleanUrl,
       affiliateUrl,
       shortCode,
-      finalTitle
+      productInfo.title,
+      productInfo.image,
+      productInfo.price,
+      productInfo.estimatedCashback,
+      productInfo.category
     );
 
     const savedLink = db.prepare('SELECT * FROM converted_links WHERE id = ?').get(result.lastInsertRowid);
-
 
     return res.json({
       success: true,
       message: 'Chuyển đổi link hoàn tiền thành công!',
       link: {
         ...savedLink,
-        localRedirectUrl
+        localRedirectUrl,
+        product_title: productInfo.title,
+        product_image: productInfo.image,
+        product_price: productInfo.price,
+        estimated_cashback: productInfo.estimatedCashback,
+        category_name: productInfo.category
       }
     });
   } catch (error) {

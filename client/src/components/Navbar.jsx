@@ -20,7 +20,8 @@ import {
   Info,
   ExternalLink,
   Zap,
-  Search
+  Search,
+  Crown
 } from 'lucide-react';
 import { formatVND } from '../services/api';
 
@@ -70,19 +71,19 @@ export default function Navbar({ activeTab, setActiveTab, onOpenAuth }) {
             className="flex items-center gap-2.5 cursor-pointer select-none group shrink-0"
           >
             <div className="w-10 h-10 rounded-2xl bg-linear-to-tr from-orange-600 via-orange-500 to-amber-500 flex items-center justify-center text-white shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform">
-              <ShoppingBag className="w-5 h-5" />
+              <Crown className="w-5 h-5 text-amber-200 fill-amber-300/30" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="font-black text-xl tracking-tight bg-linear-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent">
-                  ShopeeCash
+                  Vua Hoàn Tiền
                 </span>
-                <span className="text-[10px] uppercase font-extrabold tracking-wider px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 border border-orange-200">
-                  ShopBack Style
+                <span className="text-[10px] uppercase font-extrabold tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+                  VuaHoanTien.vn
                 </span>
               </div>
               <p className="text-[10px] text-slate-400 font-medium -mt-0.5 hidden lg:block">
-                Hoàn tiền mua sắm Shopee Affiliate
+                Hoàn tiền mua sắm Shopee tự động
               </p>
             </div>
           </div>
