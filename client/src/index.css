@@ -2,7 +2,9 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 min-h-screen font-sans antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    @apply bg-[#F8F9FA] text-[#212529] min-h-screen antialiased;
+    letter-spacing: -0.011em;
   }
 }
 
