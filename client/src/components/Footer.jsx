@@ -44,9 +44,6 @@ export default function Footer() {
             <p className="text-gray-400 text-xs leading-relaxed">
               Nền tảng hỗ trợ người tiêu dùng tối ưu chi phí mua sắm trực tuyến thông qua cơ chế tiếp thị liên kết hoàn tiền chính ngạch.
             </p>
-            <div className="text-gray-500 text-[11px] pt-1">
-              Đơn vị phát triển: VIVA Business Consulting
-            </div>
           </div>
 
           <div>
