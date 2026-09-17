@@ -90,9 +90,14 @@ app.get('/api/admin/settings', authenticateToken, requireAdmin, adminController.
 app.put('/api/admin/settings', authenticateToken, requireAdmin, adminController.updateSettings);
 app.post('/api/admin/test-shopee-api', authenticateToken, requireAdmin, adminController.testShopeeApi);
 
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', time: new Date().toISOString() });
+// Health check (supports /health and /api/health for UptimeRobot & keep-alive pingers)
+app.get(['/health', '/api/health'], (req, res) => {
+  res.json({
+    status: 'ok',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    service: 'Shopee Cashback API'
+  });
 });
 
 // Serve frontend build in production / unified mode
