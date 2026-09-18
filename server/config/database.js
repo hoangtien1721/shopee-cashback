@@ -108,7 +108,7 @@ function initDb() {
   insertSetting.run('shopee_app_id', '', 'Shopee Affiliate Open API App ID');
   insertSetting.run('shopee_app_secret', '', 'Shopee Affiliate Open API Secret Key');
   insertSetting.run('shopee_affiliate_id', 'partner_cashback_master', 'Shopee Affiliate Partner ID');
-  insertSetting.run('site_name', 'Shopee Cashback 50%', 'Tên website');
+  insertSetting.run('site_name', 'Box Hoàn Tiền - Nền tảng hoàn tiền Shopee 50%', 'Tên website');
 
   console.log('Database initialized successfully with WAL mode at:', dbPath);
 }

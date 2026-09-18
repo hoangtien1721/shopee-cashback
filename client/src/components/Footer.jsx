@@ -38,8 +38,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div className="space-y-2">
             <div className="flex items-baseline gap-1">
-              <span className="font-bold text-base text-white tracking-tight">VuaHoanTien</span>
-              <span className="text-xs font-semibold text-orange-500">.vn</span>
+              <span className="font-bold text-base text-white tracking-tight">BoxHoanTien</span>
+              <span className="text-xs font-semibold text-orange-500">.com</span>
             </div>
             <p className="text-gray-400 text-xs leading-relaxed">
               Nền tảng hỗ trợ người tiêu dùng tối ưu chi phí mua sắm trực tuyến thông qua cơ chế tiếp thị liên kết hoàn tiền chính ngạch.
@@ -62,21 +62,21 @@ export default function Footer() {
               <li><a href="#faq" className="hover:text-white transition-colors">Câu hỏi thường gặp</a></li>
               <li><span>Hạn mức rút tối thiểu: 50.000 đ</span></li>
               <li><span>Thời gian đối soát: Thứ 2 - Thứ 6</span></li>
-              <li><span>Email: hotro@vuahoantien.vn</span></li>
+              <li><span>Email: hotro@boxhoantien.com</span></li>
             </ul>
           </div>
 
           <div>
             <div className="text-gray-200 font-semibold mb-3">Lưu ý pháp lý</div>
             <p className="text-gray-500 text-[11px] leading-relaxed">
-              Shopee là nhãn hiệu thuộc sở hữu của Tập đoàn Sea Ltd. Vua Hoàn Tiền là nền tảng tiếp thị liên kết độc lập, không phải là đơn vị bán lẻ trực tiếp các sản phẩm được niêm yết trên Shopee.
+              Shopee là nhãn hiệu thuộc sở hữu của Tập đoàn Sea Ltd. Box Hoàn Tiền là nền tảng tiếp thị liên kết độc lập, không phải là đơn vị bán lẻ trực tiếp các sản phẩm được niêm yết trên Shopee.
             </p>
           </div>
         </div>
 
         <div className="pt-6 border-t border-gray-800 text-[11px] text-gray-500 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div>
-            © 2026 VuaHoanTien.vn. Tất cả các quyền được bảo lưu.
+            © 2026 BoxHoanTien.com. Tất cả các quyền được bảo lưu.
           </div>
           <div>
             Phiên bản hệ thống 2.4.0 • Shopee Affiliate Integrated

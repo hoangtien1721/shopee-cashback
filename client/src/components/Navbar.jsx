@@ -17,7 +17,8 @@ import {
   HelpCircle,
   Info,
   Search,
-  ExternalLink
+  ExternalLink,
+  Box
 } from 'lucide-react';
 import { formatVND } from '../services/api';
 
@@ -63,17 +64,17 @@ export default function Navbar({ activeTab, setActiveTab, onOpenAuth }) {
           {/* Brand Logo */}
           <div
             onClick={() => setActiveTab('home')}
-            className="flex items-center gap-2 cursor-pointer select-none shrink-0"
+            className="flex items-center gap-2.5 cursor-pointer select-none shrink-0"
           >
-            <div className="w-8 h-8 rounded-md bg-orange-600 flex items-center justify-center text-white font-bold text-sm shadow-xs">
-              V
+            <div className="w-8 h-8 rounded-md bg-orange-600 flex items-center justify-center text-white shadow-xs">
+              <Box className="w-4 h-4 text-white stroke-[2.5]" />
             </div>
             <div className="flex items-baseline gap-1">
               <span className="font-bold text-lg text-gray-900 tracking-tight">
-                VuaHoanTien
+                BoxHoanTien
               </span>
               <span className="text-xs font-semibold text-orange-600">
-                .vn
+                .com
               </span>
             </div>
           </div>

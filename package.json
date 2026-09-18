@@ -1,7 +1,7 @@
 {
   "name": "shopee-cashback-platform",
   "version": "1.0.0",
-  "description": "Nền tảng hoàn tiền mua sắm Shopee Affiliate 50% - Tự động đối soát và chi trả ngân hàng trong 3 ngày làm việc",
+  "description": "BoxHoanTien.com - Nền tảng hoàn tiền mua sắm Shopee Affiliate 50% - Tự động đối soát và chi trả ngân hàng trong 3 ngày làm việc",
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
@@ -9,8 +9,8 @@
     "dev:server": "cd server && node index.js",
     "dev:client": "cd client && npm run dev"
   },
-  "keywords": ["shopee", "cashback", "affiliate", "vietqr"],
-  "author": "Shopee Cashback Platform",
+  "keywords": ["boxhoantien", "shopee", "cashback", "affiliate", "vietqr"],
+  "author": "BoxHoanTien.com",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.3",

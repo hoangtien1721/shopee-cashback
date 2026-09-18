@@ -747,7 +747,7 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
             </div>
             <h4 className="font-semibold text-gray-900 text-sm">Tạo link hoàn tiền</h4>
             <p className="text-xs text-gray-500 leading-relaxed">
-              Dán link vào Vua Hoàn Tiền để tạo đường dẫn chuyển hướng có gắn mã định danh Sub ID.
+              Dán link vào Box Hoàn Tiền để tạo đường dẫn chuyển hướng có gắn mã định danh Sub ID.
             </p>
           </div>
 
