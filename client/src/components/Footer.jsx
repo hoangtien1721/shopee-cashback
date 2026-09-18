@@ -49,10 +49,9 @@ export default function Footer() {
           <div>
             <div className="text-gray-200 font-semibold mb-3">Liên kết nhanh</div>
             <ul className="space-y-2 text-gray-400">
-              <li><a href="#popular-stores" className="hover:text-white transition-colors">Thương hiệu đối tác</a></li>
-              <li><a href="#hot-deals" className="hover:text-white transition-colors">Ưu đãi hôm nay</a></li>
+              <li><a href="#how-it-works" className="hover:text-white transition-colors">Cách hoạt động</a></li>
               <li><a href="#rates-table" className="hover:text-white transition-colors">Biểu phí hoàn tiền</a></li>
-              <li><a href="#how-it-works" className="hover:text-white transition-colors">Quy trình ghi nhận</a></li>
+              <li><a href="#faq" className="hover:text-white transition-colors">Câu hỏi thường gặp</a></li>
             </ul>
           </div>
 

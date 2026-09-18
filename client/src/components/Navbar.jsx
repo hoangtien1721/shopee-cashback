@@ -79,34 +79,16 @@ export default function Navbar({ activeTab, setActiveTab, onOpenAuth }) {
             </div>
           </div>
 
-          {/* Search / Converter bar */}
-          <div className="hidden md:flex flex-1 max-w-lg mx-4">
-            <div
-              onClick={() => {
-                setActiveTab('home');
-                const el = document.getElementById('shopee-link-input');
-                if (el) {
-                  el.focus();
-                  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-              }}
-              className="w-full flex items-center gap-2 px-3 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-300 rounded-md text-xs text-gray-500 cursor-pointer transition-colors"
-            >
-              <Search className="w-4 h-4 text-gray-400 shrink-0" />
-              <span className="truncate">Dán link Shopee hoặc tìm kiếm danh mục hoàn tiền...</span>
-            </div>
-          </div>
-
           {/* Navigation Links */}
-          <div className="hidden lg:flex items-center gap-5 text-xs font-medium text-gray-600">
-            <a href="#popular-stores" className="hover:text-gray-900 transition-colors">
-              Thương hiệu
-            </a>
-            <a href="#hot-deals" className="hover:text-gray-900 transition-colors">
-              Ưu đãi hôm nay
+          <div className="hidden md:flex items-center gap-6 text-xs font-medium text-gray-600">
+            <a href="#how-it-works" className="hover:text-gray-900 transition-colors">
+              Cách hoạt động
             </a>
             <a href="#rates-table" className="hover:text-gray-900 transition-colors">
-              Biểu phí
+              Biểu phí hoàn tiền
+            </a>
+            <a href="#faq" className="hover:text-gray-900 transition-colors">
+              Câu hỏi thường gặp
             </a>
             <button
               onClick={() => {
@@ -211,39 +193,6 @@ export default function Navbar({ activeTab, setActiveTab, onOpenAuth }) {
         </div>
       </div>
 
-      {/* Sub-navbar (Category Navigation) */}
-      <nav className="border-t border-gray-200 bg-white hidden md:block">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs py-2 text-gray-600 font-medium">
-          <div className="flex items-center gap-6 overflow-x-auto">
-            <button
-              onClick={() => {
-                setActiveTab('home');
-                const el = document.getElementById('shopee-link-input');
-                if (el) {
-                  el.focus();
-                  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-              }}
-              className="font-bold text-gray-900 hover:text-orange-600 transition-colors flex items-center gap-1.5 shrink-0"
-            >
-              <Menu className="w-3.5 h-3.5" />
-              <span>Tất cả danh mục</span>
-            </button>
-            <a href="#popular-stores" className="hover:text-gray-900 transition-colors shrink-0">Shopee Mall</a>
-            <a href="#popular-stores" className="hover:text-gray-900 transition-colors shrink-0">Thời trang</a>
-            <a href="#popular-stores" className="hover:text-gray-900 transition-colors shrink-0">Làm đẹp</a>
-            <a href="#popular-stores" className="hover:text-gray-900 transition-colors shrink-0">Gia dụng</a>
-            <a href="#popular-stores" className="hover:text-gray-900 transition-colors shrink-0">Thiết bị số</a>
-            <a href="#popular-stores" className="hover:text-gray-900 transition-colors shrink-0">Mẹ & Bé</a>
-            <a href="#how-it-works" className="hover:text-gray-900 transition-colors shrink-0">Quy trình hoàn tiền</a>
-          </div>
-
-          <div className="text-[11px] text-gray-500 font-normal shrink-0 pl-4 border-l border-gray-200">
-            Cam kết chi trả trong <span className="font-semibold text-gray-800">3 ngày làm việc</span>
-          </div>
-        </div>
-      </nav>
-
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-gray-200 bg-white px-4 py-3 space-y-2 text-xs">
@@ -269,40 +218,37 @@ export default function Navbar({ activeTab, setActiveTab, onOpenAuth }) {
             </div>
           )}
           <a
-            href="#popular-stores"
+            href="#how-it-works"
             onClick={() => setMobileMenuOpen(false)}
-            className="block py-1.5 text-gray-700"
+            className="block py-1.5 text-gray-700 font-medium"
           >
-            Thương hiệu đối tác
-          </a>
-          <a
-            href="#hot-deals"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-1.5 text-gray-700"
-          >
-            Ưu đãi hoàn tiền hôm nay
+            Cách hoạt động
           </a>
           <a
             href="#rates-table"
             onClick={() => setMobileMenuOpen(false)}
-            className="block py-1.5 text-gray-700"
+            className="block py-1.5 text-gray-700 font-medium"
           >
             Biểu phí hoàn tiền
           </a>
           <a
-            href="#how-it-works"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-1.5 text-gray-700"
-          >
-            Quy trình hoạt động
-          </a>
-          <a
             href="#faq"
             onClick={() => setMobileMenuOpen(false)}
-            className="block py-1.5 text-gray-700"
+            className="block py-1.5 text-gray-700 font-medium"
           >
             Câu hỏi thường gặp
           </a>
+          <button
+            type="button"
+            onClick={() => {
+              setMobileMenuOpen(false);
+              if (!user) onOpenAuth('login');
+              else setShowReferralModal(true);
+            }}
+            className="w-full text-left py-1.5 text-orange-600 font-semibold"
+          >
+            Mời bạn bè nhận 30.000 đ
+          </button>
         </div>
       )}
 
