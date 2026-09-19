@@ -24,6 +24,7 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
 
   // Converter state
   const [inputUrl, setInputUrl] = useState('');
+  const [customPrice, setCustomPrice] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [convertedResult, setConvertedResult] = useState(null);
@@ -96,9 +97,13 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
 
     setLoading(true);
     try {
+      const cleanPrice = customPrice ? parseInt(customPrice.replace(/\D/g, ''), 10) : 0;
       const res = await apiRequest('/links/convert', {
         method: 'POST',
-        body: JSON.stringify({ url: targetUrl.trim() })
+        body: JSON.stringify({
+          url: targetUrl.trim(),
+          price: cleanPrice
+        })
       });
 
       if (res.success && res.link) {
@@ -325,6 +330,39 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
                           <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
                           <span>Tự động cộng ví sau khi nhận hàng</span>
                         </div>
+                      </div>
+                    </div>
+
+                    {/* Inline Quick Price Calculator */}
+                    <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 bg-gray-50/80 p-2.5 rounded-xl border border-gray-200">
+                      <div className="text-[11px] text-gray-600 font-medium flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+                        <span>Nhập giá đơn hàng để tính nhanh tiền hoàn:</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 w-full sm:w-auto">
+                        <div className="relative flex-1 sm:w-36">
+                          <input
+                            type="text"
+                            placeholder="VD: 85.000"
+                            value={customPrice}
+                            onChange={(e) => setCustomPrice(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleConvert(null);
+                              }
+                            }}
+                            className="w-full px-2.5 py-1 text-xs bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 font-mono text-gray-900"
+                          />
+                          <span className="absolute right-2 top-1 text-[11px] text-gray-400 font-sans">₫</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleConvert(null)}
+                          className="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg text-xs cursor-pointer shadow-2xs whitespace-nowrap"
+                        >
+                          Tính ngay
+                        </button>
                       </div>
                     </div>
                   </div>

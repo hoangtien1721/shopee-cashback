@@ -1,6 +1,7 @@
 const { db } = require('../config/database');
 const {
   extractShopeeUrl,
+  extractPriceFromText,
   sanitizeShopeeUrl,
   extractProductTitle,
   generateShortCode,
@@ -10,7 +11,7 @@ const {
 
 async function convertLink(req, res) {
   try {
-    const { url, product_title } = req.body;
+    const { url, product_title, price } = req.body;
     const userId = req.user.id;
 
     if (!url) {
@@ -28,8 +29,12 @@ async function convertLink(req, res) {
     const cleanUrl = sanitizeShopeeUrl(rawUrl);
     const shortCode = generateShortCode(8);
 
+    // Tự động nhận diện giá nếu có trong văn bản copy hoặc người dùng nhập
+    const autoDetectedPrice = extractPriceFromText(url);
+    const effectivePrice = (price && parseInt(price, 10) > 0) ? parseInt(price, 10) : autoDetectedPrice;
+
     // Phân tích thông tin sản phẩm và tính toán tiền hoàn dự kiến
-    const productInfo = await analyzeShopeeProduct(rawUrl, product_title);
+    const productInfo = await analyzeShopeeProduct(rawUrl, product_title, effectivePrice);
 
     // Tạo link affiliate có gắn sub_id
     const { affiliateUrl, mode } = await generateAffiliateLink({

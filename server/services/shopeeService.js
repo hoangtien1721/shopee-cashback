@@ -23,6 +23,29 @@ function extractShopeeUrl(text) {
 }
 
 /**
+ * Tự động bóc tách giá tiền nếu người dùng copy cả đoạn văn bản chia sẻ từ Shopee App
+ * Ví dụ: "Combo 3 Túi Đường... chỉ với 85.000₫. Mua trên Shopee: https..."
+ */
+function extractPriceFromText(text) {
+  if (!text || typeof text !== 'string') return 0;
+  try {
+    const match = text.match(/([0-9]{1,3}(?:[.,][0-9]{3})+|[0-9]{2,}\s*k)\s*(?:₫|đ|k|vnd)?/i) ||
+                  text.match(/(?:chỉ với|giá|giá chỉ|với giá)\s*([0-9]{1,3}(?:[.,][0-9]{3})+|[0-9]+)/i);
+    if (match) {
+      let raw = match[1].toLowerCase().replace(/\s+/g, '');
+      if (raw.endsWith('k')) {
+        return parseInt(raw.replace('k', ''), 10) * 1000;
+      }
+      const cleanNum = parseInt(raw.replace(/[.,]/g, ''), 10);
+      if (cleanNum >= 1000 && cleanNum <= 500000000) {
+        return cleanNum;
+      }
+    }
+  } catch (e) {}
+  return 0;
+}
+
+/**
  * Làm sạch link Shopee để giữ lại link sản phẩm chuẩn
  */
 function sanitizeShopeeUrl(url) {
@@ -292,7 +315,7 @@ function cleanProductTitle(raw) {
  * 2. Phân loại ngành hàng thông minh
  * 3. Trả về tỷ lệ hoàn tiền chuẩn xác thay vì giá giả lập gây hiểu nhầm
  */
-async function analyzeShopeeProduct(url, explicitTitle = '') {
+async function analyzeShopeeProduct(url, explicitTitle = '', customPrice = 0) {
   let resolvedUrl = url;
   let scrapedImage = '';
   let scrapedTitle = '';
@@ -420,6 +443,14 @@ async function analyzeShopeeProduct(url, explicitTitle = '') {
     cashbackRate = '5.0% - 10.5%';
   }
 
+  // Nếu có giá tùy chọn hoặc bóc tách từ văn bản chia sẻ
+  if (customPrice && customPrice > 0) {
+    price = customPrice;
+    const rateNum = parseFloat(cashbackRate) || 7.0;
+    // Tiền hoàn cho user = 50% hoa hồng Shopee chi trả
+    estimatedCashback = Math.round(customPrice * (rateNum / 100) * 0.5);
+  }
+
   // Hình ảnh: Ưu tiên hình ảnh thật lấy từ Shopee CDN
   const image = scrapedImage || '';
 
@@ -436,6 +467,7 @@ async function analyzeShopeeProduct(url, explicitTitle = '') {
 
 module.exports = {
   extractShopeeUrl,
+  extractPriceFromText,
   sanitizeShopeeUrl,
   extractProductTitle,
   generateShortCode,
