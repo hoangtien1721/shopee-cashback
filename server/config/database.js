@@ -110,6 +110,7 @@ function initDb() {
   insertSetting.run('shopee_affiliate_id', 'partner_cashback_master', 'Shopee Affiliate Partner ID');
   insertSetting.run('site_name', 'Box Hoàn Tiền - Nền tảng hoàn tiền Shopee 50%', 'Tên website');
   insertSetting.run('google_client_id', '', 'Google OAuth Client ID cho đăng nhập Gmail');
+  insertSetting.run('google_client_secret', '', 'Google OAuth Client Secret');
 
   console.log('Database initialized successfully with WAL mode at:', dbPath);
 }

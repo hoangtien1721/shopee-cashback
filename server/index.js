@@ -51,6 +51,9 @@ app.get('/api/settings/public', adminController.getPublicSettings);
 app.post('/api/auth/register', authController.register);
 app.post('/api/auth/login', authController.login);
 app.post('/api/auth/google', authController.googleAuth);
+app.get('/api/auth/google/url', authController.getGoogleAuthUrl);
+app.get('/api/auth/google/redirect', authController.redirectToGoogle);
+app.get('/api/auth/google/callback', authController.googleCallback);
 app.get('/api/auth/profile', authenticateToken, authController.getProfile);
 app.put('/api/auth/profile', authenticateToken, authController.updateProfile);
 

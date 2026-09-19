@@ -519,7 +519,7 @@ function getSettings(req, res) {
 
 function updateSettings(req, res) {
   try {
-    const { cashback_rate, min_withdrawal, payout_sla_days, shopee_app_id, shopee_app_secret, shopee_affiliate_id, shopee_cookie, site_name } = req.body;
+    const { cashback_rate, min_withdrawal, payout_sla_days, shopee_app_id, shopee_app_secret, shopee_affiliate_id, shopee_cookie, site_name, google_client_id, google_client_secret } = req.body;
 
     const upsertStmt = db.prepare(`
       INSERT INTO system_settings (key, value)
@@ -536,6 +536,8 @@ function updateSettings(req, res) {
       if (shopee_affiliate_id !== undefined) upsertStmt.run('shopee_affiliate_id', String(shopee_affiliate_id));
       if (shopee_cookie !== undefined) upsertStmt.run('shopee_cookie', String(shopee_cookie));
       if (site_name !== undefined) upsertStmt.run('site_name', String(site_name));
+      if (google_client_id !== undefined) upsertStmt.run('google_client_id', String(google_client_id).trim());
+      if (google_client_secret !== undefined) upsertStmt.run('google_client_secret', String(google_client_secret).trim());
     });
 
     updateTx();

@@ -53,8 +53,10 @@ export default function AdminDashboard({ onNavigate }) {
     payout_sla_days: '3',
     shopee_app_id: '',
     shopee_app_secret: '',
-    shopee_affiliate_id: 'viva_cashback',
-    shopee_cookie: ''
+    shopee_affiliate_id: 'boxhoantien_affiliate',
+    shopee_cookie: '',
+    google_client_id: '',
+    google_client_secret: ''
   });
   const [saveSettingMsg, setSaveSettingMsg] = useState('');
   const [testingApi, setTestingApi] = useState(false);
@@ -916,6 +918,82 @@ export default function AdminDashboard({ onNavigate }) {
                   <strong>Kết quả kiểm tra:</strong> {apiTestResult.message}
                 </div>
               )}
+
+              {/* TÍCH HỢP GOOGLE OAUTH 2.0 (ĐĂNG NHẬP GMAIL) */}
+              <div className="p-4 bg-blue-50/70 border border-blue-200 rounded-2xl space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24">
+                      <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                      <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.26 21.36 7.33 24 12 24z"/>
+                      <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.94 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/>
+                      <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                    </svg>
+                    <span>Google OAuth 2.0 (Màn hình Chọn tài khoản Gmail)</span>
+                  </h4>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    settings.google_client_id
+                      ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+                      : 'bg-amber-100 text-amber-700 border border-amber-200'
+                  }`}>
+                    {settings.google_client_id ? '✓ Đã kích hoạt OAuth' : 'Chưa cấu hình Client ID'}
+                  </span>
+                </div>
+
+                <p className="text-xs text-blue-900 leading-relaxed">
+                  Khi cấu hình Google OAuth, khi người dùng bấm <strong>"Đăng nhập bằng Google"</strong> sẽ được chuyển trực tiếp sang trang <strong>Chọn tài khoản (accounts.google.com)</strong> của Google để bấm chọn Gmail đăng nhập 1 chạm.
+                </p>
+
+                <div className="p-3 bg-white rounded-xl border border-blue-200/80 space-y-2 text-xs">
+                  <div className="font-semibold text-slate-800">
+                    🔗 Authorized Redirect URI (Dán vào Google Cloud Console):
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={`${window.location.origin}/api/auth/google/callback`}
+                      className="flex-1 px-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg font-mono text-slate-700 select-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(`${window.location.origin}/api/auth/google/callback`);
+                        alert('Đã sao chép Authorized Redirect URI vào clipboard!');
+                      }}
+                      className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold cursor-pointer shrink-0"
+                    >
+                      Sao chép
+                    </button>
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    💡 Hướng dẫn nhanh: Truy cập <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer" className="text-blue-600 underline font-semibold">Google Cloud Console &gt; Credentials</a> &gt; Create Credentials &gt; OAuth client ID &gt; Web application &gt; Thêm URI ở trên vào mục <strong>Authorized redirect URIs</strong>.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 mb-1">Google Client ID</label>
+                    <input
+                      type="text"
+                      placeholder="VD: 123456789-abc.apps.googleusercontent.com"
+                      value={settings.google_client_id || ''}
+                      onChange={(e) => setSettings({ ...settings, google_client_id: e.target.value })}
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl font-mono focus:outline-hidden bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 mb-1">Google Client Secret</label>
+                    <input
+                      type="password"
+                      placeholder="GOCSPX-••••••••••••••••"
+                      value={settings.google_client_secret || ''}
+                      onChange={(e) => setSettings({ ...settings, google_client_secret: e.target.value })}
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl font-mono focus:outline-hidden bg-white"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="flex flex-wrap gap-2 pt-2">

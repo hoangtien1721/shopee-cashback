@@ -232,7 +232,197 @@ async function googleAuth(req, res) {
     });
   } catch (error) {
     console.error('Google Auth Error:', error);
-    return res.status(500).json({ success: false, message: 'Lỗi đăng nhập Google: ' + error.message });
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+function getGoogleRedirectUri(req) {
+  const proto = req.headers['x-forwarded-proto'] || req.protocol || 'https';
+  const host = req.headers['x-forwarded-host'] || req.headers.host;
+  return `${proto}://${host}/api/auth/google/callback`;
+}
+
+function exchangeGoogleCode(code, clientId, clientSecret, redirectUri) {
+  return new Promise((resolve, reject) => {
+    const postData = new URLSearchParams({
+      code,
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uri: redirectUri,
+      grant_type: 'authorization_code'
+    }).toString();
+
+    const options = {
+      hostname: 'oauth2.googleapis.com',
+      path: '/token',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.error) {
+            reject(new Error(parsed.error_description || parsed.error));
+          } else {
+            resolve(parsed);
+          }
+        } catch (e) {
+          reject(e);
+        }
+      });
+    });
+    req.on('error', reject);
+    req.write(postData);
+    req.end();
+  });
+}
+
+function fetchGoogleUserInfo(accessToken) {
+  return new Promise((resolve, reject) => {
+    const options = {
+      hostname: 'www.googleapis.com',
+      path: '/oauth2/v3/userinfo',
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'User-Agent': 'BoxHoanTien-OAuth'
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.error) {
+            reject(new Error(parsed.error_description || parsed.error));
+          } else {
+            resolve(parsed);
+          }
+        } catch (e) {
+          reject(e);
+        }
+      });
+    });
+    req.on('error', reject);
+    req.end();
+  });
+}
+
+function getGoogleAuthUrl(req, res) {
+  try {
+    const clientIdSetting = db.prepare('SELECT value FROM system_settings WHERE key = ?').get('google_client_id');
+    const clientId = process.env.GOOGLE_CLIENT_ID || (clientIdSetting ? clientIdSetting.value : '');
+    const redirectUri = getGoogleRedirectUri(req);
+
+    if (!clientId) {
+      return res.json({
+        success: false,
+        configured: false,
+        redirectUri,
+        message: 'Chưa cấu hình Google Client ID'
+      });
+    }
+
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=openid%20email%20profile&prompt=select_account&access_type=offline`;
+
+    return res.json({
+      success: true,
+      configured: true,
+      redirectUri,
+      url
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+function redirectToGoogle(req, res) {
+  try {
+    const clientIdSetting = db.prepare('SELECT value FROM system_settings WHERE key = ?').get('google_client_id');
+    const clientId = process.env.GOOGLE_CLIENT_ID || (clientIdSetting ? clientIdSetting.value : '');
+    const redirectUri = getGoogleRedirectUri(req);
+
+    if (!clientId) {
+      return res.redirect('/#google_not_configured=true');
+    }
+
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=openid%20email%20profile&prompt=select_account&access_type=offline`;
+    return res.redirect(url);
+  } catch (error) {
+    return res.redirect('/#google_error=' + encodeURIComponent(error.message));
+  }
+}
+
+async function googleCallback(req, res) {
+  try {
+    const { code, error } = req.query;
+    if (error) {
+      return res.redirect('/#google_error=' + encodeURIComponent(error));
+    }
+    if (!code) {
+      return res.redirect('/#google_error=missing_code');
+    }
+
+    const clientIdSetting = db.prepare('SELECT value FROM system_settings WHERE key = ?').get('google_client_id');
+    const clientSecretSetting = db.prepare('SELECT value FROM system_settings WHERE key = ?').get('google_client_secret');
+    const clientId = process.env.GOOGLE_CLIENT_ID || (clientIdSetting ? clientIdSetting.value : '');
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET || (clientSecretSetting ? clientSecretSetting.value : '');
+    const redirectUri = getGoogleRedirectUri(req);
+
+    if (!clientId || !clientSecret) {
+      return res.redirect('/#google_error=not_configured');
+    }
+
+    const tokens = await exchangeGoogleCode(code, clientId, clientSecret, redirectUri);
+    let googleUser = null;
+
+    if (tokens.access_token) {
+      try {
+        googleUser = await fetchGoogleUserInfo(tokens.access_token);
+      } catch (err) {
+        console.warn('Could not fetch userinfo, checking id_token:', err);
+      }
+    }
+
+    if (!googleUser && tokens.id_token) {
+      const parts = tokens.id_token.split('.');
+      if (parts.length === 3) {
+        googleUser = JSON.parse(Buffer.from(parts[1], 'base64').toString('utf8'));
+      }
+    }
+
+    if (!googleUser || !googleUser.email) {
+      return res.redirect('/#google_error=no_email_found');
+    }
+
+    const email = googleUser.email.toLowerCase().trim();
+    let user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+
+    if (!user) {
+      const dummyPassword = bcrypt.hashSync(crypto.randomBytes(16).toString('hex'), 10);
+      const fullName = (googleUser.name || email.split('@')[0] || 'Khách hàng Google').trim();
+      const insertStmt = db.prepare(`
+        INSERT INTO users (email, password, full_name, role)
+        VALUES (?, ?, ?, 'user')
+      `);
+      const result = insertStmt.run(email, dummyPassword, fullName);
+      user = db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid);
+    }
+
+    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '30d' });
+    return res.redirect(`/#auth_token=${token}`);
+  } catch (error) {
+    console.error('Google OAuth Callback Error:', error);
+    return res.redirect('/#google_error=' + encodeURIComponent(error.message));
   }
 }
 
@@ -240,6 +430,9 @@ module.exports = {
   register,
   login,
   googleAuth,
+  getGoogleAuthUrl,
+  redirectToGoogle,
+  googleCallback,
   getProfile,
   updateProfile
 };

@@ -109,22 +109,67 @@ function AdminGatekeeper({ onLoginSuccess, onCancel }) {
 }
 
 function MainApp() {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, loginWithToken } = useAuth();
   const [activeTab, setActiveTab] = useState('home'); // 'home' | 'dashboard' | 'withdraw' | 'admin'
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login');
+  const [toastNotification, setToastNotification] = useState(null);
 
-  // Secret URL listener: #admin-management (or #admin)
+  // Secret URL listener: #admin-management (or #admin) & Google OAuth Token handler
   useEffect(() => {
-    const handleHash = () => {
-      const hash = (window.location.hash || '').toLowerCase();
+    const handleHash = async () => {
+      const fullHash = window.location.hash || '';
+      const hash = fullHash.toLowerCase();
+
+      // 1. Google OAuth Token Return
+      if (fullHash.includes('auth_token=')) {
+        const match = fullHash.match(/auth_token=([^&]+)/);
+        if (match && match[1]) {
+          const token = decodeURIComponent(match[1]);
+          const loggedIn = await loginWithToken(token);
+          window.history.replaceState(null, '', window.location.pathname);
+          if (loggedIn) {
+            setToastNotification({
+              type: 'success',
+              message: `Xin chào ${loggedIn.full_name || loggedIn.email}! Bạn đã đăng nhập thành công bằng tài khoản Google.`
+            });
+            setTimeout(() => setToastNotification(null), 5000);
+          }
+          return;
+        }
+      }
+
+      // 2. Google OAuth Error / Not Configured Handlers
+      if (fullHash.includes('google_not_configured=true')) {
+        window.history.replaceState(null, '', window.location.pathname);
+        setToastNotification({
+          type: 'warning',
+          message: 'Chưa cấu hình Google Client ID. Vào #admin-management (Cài đặt) để nhập Client ID từ Google Cloud Console.'
+        });
+        setTimeout(() => setToastNotification(null), 7000);
+        return;
+      }
+
+      if (fullHash.includes('google_error=')) {
+        const match = fullHash.match(/google_error=([^&]+)/);
+        const err = match ? decodeURIComponent(match[1]) : 'Lỗi xác thực';
+        window.history.replaceState(null, '', window.location.pathname);
+        setToastNotification({
+          type: 'error',
+          message: `Lỗi đăng nhập Google: ${err}`
+        });
+        setTimeout(() => setToastNotification(null), 6000);
+        return;
+      }
+
+      // 3. Navigation
       if (hash === '#admin-management' || hash === '#admin') {
         setActiveTab('admin');
       } else if (hash === '#dashboard') {
         setActiveTab('dashboard');
       } else if (hash === '#withdraw') {
         setActiveTab('withdraw');
-      } else if (activeTab === 'admin') {
+      } else if (activeTab === 'admin' && !hash.includes('admin')) {
         setActiveTab('home');
       }
     };
@@ -156,6 +201,30 @@ function MainApp() {
         setActiveTab={navigateTo}
         onOpenAuth={openAuth}
       />
+
+      {/* Global Toast Notification */}
+      {toastNotification && (
+        <div className="max-w-4xl mx-auto px-4 pt-3 w-full animate-in fade-in duration-200">
+          <div className={`p-3.5 rounded-xl border text-xs font-semibold flex items-center justify-between shadow-sm ${
+            toastNotification.type === 'success'
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+              : toastNotification.type === 'warning'
+              ? 'bg-amber-50 border-amber-200 text-amber-800'
+              : 'bg-rose-50 border-rose-200 text-rose-800'
+          }`}>
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{toastNotification.message}</span>
+            </div>
+            <button
+              onClick={() => setToastNotification(null)}
+              className="text-xs opacity-70 hover:opacity-100 font-bold ml-2 cursor-pointer"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Main Content View */}
       <main className="flex-1">

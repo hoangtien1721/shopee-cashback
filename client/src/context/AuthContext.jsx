@@ -70,6 +70,23 @@ export function AuthProvider({ children }) {
     return res;
   }
 
+  async function loginWithToken(token) {
+    if (!token) return;
+    setAuthToken(token);
+    try {
+      const res = await apiRequest('/auth/profile');
+      if (res.success && res.user) {
+        setUser(res.user);
+        return res.user;
+      }
+    } catch (err) {
+      console.warn('Could not authenticate with token:', err);
+      setAuthToken(null);
+      setUser(null);
+    }
+    return null;
+  }
+
   function logout() {
     setAuthToken(null);
     setUser(null);
@@ -105,6 +122,7 @@ export function AuthProvider({ children }) {
         login,
         register,
         loginWithGoogle,
+        loginWithToken,
         logout,
         refreshUser,
         updateProfile,
