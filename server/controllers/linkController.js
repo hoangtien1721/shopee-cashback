@@ -76,6 +76,7 @@ async function convertLink(req, res) {
         product_image: productInfo.image,
         product_price: productInfo.price,
         estimated_cashback: productInfo.estimatedCashback,
+        cashback_rate: productInfo.cashbackRate,
         category_name: productInfo.category
       }
     });

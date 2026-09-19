@@ -14,7 +14,9 @@ import {
   Copy,
   Check,
   Search,
-  Sparkles
+  Sparkles,
+  ShoppingBag,
+  Tag
 } from 'lucide-react';
 
 export default function HomePage({ onOpenAuth, onNavigate }) {
@@ -254,43 +256,74 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
               >
                 <div className="flex flex-col sm:flex-row gap-4 items-start">
                   {/* Thumbnail */}
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-md overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
-                    <img
-                      src={convertedResult.product_image || 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=400&auto=format&fit=crop&q=80'}
-                      alt={convertedResult.product_title}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.src = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop&q=80';
-                      }}
-                    />
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-orange-50 border border-orange-200/80 shrink-0 flex items-center justify-center shadow-xs">
+                    {convertedResult.product_image ? (
+                      <img
+                        src={convertedResult.product_image}
+                        alt={convertedResult.product_title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.parentElement.innerHTML = '<div class="flex flex-col items-center justify-center text-orange-600 p-2 text-center"><svg class="w-8 h-8 stroke-[1.5]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="text-[10px] font-bold mt-1 text-orange-700">Shopee</span></div>';
+                        }}
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center text-orange-600 p-2 text-center">
+                        <ShoppingBag className="w-8 h-8 stroke-[1.5]" />
+                        <span className="text-[10px] font-bold mt-1 text-orange-700">Shopee</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Info */}
                   <div className="flex-1 space-y-2 min-w-0">
-                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-medium">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Sản phẩm áp dụng hoàn tiền</span>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-semibold">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Sản phẩm áp dụng hoàn tiền</span>
+                      </div>
+                      {convertedResult.category_name && (
+                        <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gray-100 border border-gray-200 text-gray-700 text-[11px] font-medium">
+                          <Tag className="w-3 h-3 text-gray-500" />
+                          <span>{convertedResult.category_name}</span>
+                        </div>
+                      )}
                     </div>
 
-                    <h3 className="font-semibold text-gray-900 text-sm leading-snug line-clamp-2">
+                    <h3 className="font-bold text-gray-900 text-sm leading-snug line-clamp-2">
                       {convertedResult.product_title || 'Sản phẩm Shopee hợp lệ'}
                     </h3>
 
                     {/* Rates Grid */}
-                    <div className="grid grid-cols-2 gap-3 pt-1">
-                      <div className="p-2.5 rounded-md bg-gray-50 border border-gray-200">
-                        <div className="text-[10px] text-gray-500 uppercase font-semibold">Giá bán niêm yết</div>
-                        <div className="text-sm font-bold text-gray-800">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                      <div className="p-3 rounded-xl bg-gray-50 border border-gray-200">
+                        <div className="text-[10px] text-gray-500 uppercase font-semibold">
+                          {convertedResult.product_price && convertedResult.product_price > 0 ? 'Giá tham khảo' : 'Giá thanh toán'}
+                        </div>
+                        <div className="text-sm font-bold text-gray-900 mt-0.5">
                           {convertedResult.product_price && convertedResult.product_price > 0
                             ? formatVND(convertedResult.product_price)
-                            : 'Theo hóa đơn Shopee'}
+                            : 'Theo đơn hàng Shopee'}
+                        </div>
+                        <div className="text-[11px] text-gray-500 mt-0.5">
+                          {convertedResult.product_price && convertedResult.product_price > 0 ? 'Ước tính theo mẫu' : 'Theo phân loại hàng chọn mua'}
                         </div>
                       </div>
 
-                      <div className="p-2.5 rounded-md bg-orange-50 border border-orange-200">
-                        <div className="text-[10px] text-orange-800 uppercase font-semibold">Tiền hoàn dự kiến</div>
-                        <div className="text-sm sm:text-base font-bold text-orange-600">
-                          {formatVND(convertedResult.estimated_cashback || 116890)}
+                      <div className="p-3 rounded-xl bg-orange-50 border border-orange-200">
+                        <div className="text-[10px] text-orange-800 uppercase font-semibold">
+                          {convertedResult.product_price && convertedResult.product_price > 0 && convertedResult.estimated_cashback > 0
+                            ? 'Tiền hoàn dự kiến'
+                            : 'Tỷ lệ hoàn tiền'}
+                        </div>
+                        <div className="text-base font-extrabold text-orange-600 mt-0.5">
+                          {convertedResult.product_price && convertedResult.product_price > 0 && convertedResult.estimated_cashback > 0
+                            ? `~${formatVND(convertedResult.estimated_cashback)}`
+                            : `Lên đến ${convertedResult.cashback_rate || '10.5%'}`}
+                        </div>
+                        <div className="text-[11px] text-emerald-700 font-medium mt-0.5 flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+                          <span>Tự động cộng ví sau khi nhận hàng</span>
                         </div>
                       </div>
                     </div>
@@ -298,10 +331,13 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
                 </div>
 
                 {/* Terms notice */}
-                <div className="p-3 bg-gray-50 rounded-md border border-gray-200 text-xs text-gray-600 space-y-1">
-                  <div className="font-semibold text-gray-800">Điều kiện ghi nhận:</div>
-                  <p className="leading-relaxed">
-                    Mức tiền hoàn tạm tính được ước tính dựa trên ngành hàng và giá niêm yết. Số tiền thực nhận sẽ được đối soát theo giá trị thanh toán thực tế sau khi áp dụng voucher của Shop và Shopee. Đơn hàng hủy hoặc trả hàng sẽ không đủ điều kiện hoàn tiền.
+                <div className="p-3.5 bg-amber-50/70 rounded-xl border border-amber-200/80 text-xs text-amber-900 space-y-1">
+                  <div className="font-bold flex items-center gap-1.5 text-amber-800">
+                    <Sparkles className="w-3.5 h-3.5 text-orange-600" />
+                    <span>Cơ chế tính tiền hoàn Shopee:</span>
+                  </div>
+                  <p className="leading-relaxed text-amber-800/90 text-[11px]">
+                    Tiền hoàn được tính tự động dựa trên <strong>số tiền thực tế bạn thanh toán</strong> sau khi trừ các mã giảm giá và voucher của Shop và Shopee. Tiền hoàn sẽ tự động ghi nhận vào ví <strong>BoxHoanTien</strong> sau khi Shopee hoàn tất giao hàng.
                   </p>
                 </div>
 
