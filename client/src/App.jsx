@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
 import WithdrawPage from './pages/WithdrawPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import ProfileModal from './components/ProfileModal';
 import { Shield, Lock, Mail, AlertCircle, ArrowLeft } from 'lucide-react';
 
 function AdminGatekeeper({ onLoginSuccess, onCancel }) {
@@ -113,9 +114,10 @@ function MainApp() {
   const [activeTab, setActiveTab] = useState('home'); // 'home' | 'dashboard' | 'withdraw' | 'admin'
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login');
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [toastNotification, setToastNotification] = useState(null);
 
-  // Secret URL listener: #admin-management (or #admin) & Google OAuth Token handler
+  // Secret URL listener: #admin-management (or #admin) & Google OAuth Token handler & #profile
   useEffect(() => {
     const handleHash = async () => {
       const fullHash = window.location.hash || '';
@@ -162,8 +164,10 @@ function MainApp() {
         return;
       }
 
-      // 3. Navigation
-      if (hash === '#admin-management' || hash === '#admin') {
+      // 3. Navigation & Modal triggers
+      if (hash === '#profile' || hash === '#thong-tin-ca-nhan') {
+        setProfileModalOpen(true);
+      } else if (hash === '#admin-management' || hash === '#admin') {
         setActiveTab('admin');
       } else if (hash === '#dashboard') {
         setActiveTab('dashboard');
@@ -200,6 +204,7 @@ function MainApp() {
         activeTab={activeTab}
         setActiveTab={navigateTo}
         onOpenAuth={openAuth}
+        onOpenProfile={() => setProfileModalOpen(true)}
       />
 
       {/* Global Toast Notification */}
@@ -232,12 +237,16 @@ function MainApp() {
           <HomePage
             onOpenAuth={openAuth}
             onNavigate={navigateTo}
+            onOpenProfile={() => setProfileModalOpen(true)}
           />
         )}
 
         {activeTab === 'dashboard' && (
           user ? (
-            <DashboardPage onNavigate={navigateTo} />
+            <DashboardPage
+              onNavigate={navigateTo}
+              onOpenProfile={() => setProfileModalOpen(true)}
+            />
           ) : (
             <div className="max-w-md mx-auto my-16 p-6 sm:p-8 bg-white rounded-xl text-center shadow-lg border border-gray-200">
               <h3 className="text-xl font-bold text-gray-900 mb-2">Vui lòng đăng nhập</h3>
@@ -254,7 +263,10 @@ function MainApp() {
 
         {activeTab === 'withdraw' && (
           user ? (
-            <WithdrawPage onNavigate={navigateTo} />
+            <WithdrawPage
+              onNavigate={navigateTo}
+              onOpenProfile={() => setProfileModalOpen(true)}
+            />
           ) : (
             <div className="max-w-md mx-auto my-16 p-6 sm:p-8 bg-white rounded-xl text-center shadow-lg border border-gray-200">
               <h3 className="text-xl font-bold text-gray-900 mb-2">Vui lòng đăng nhập</h3>
@@ -292,6 +304,14 @@ function MainApp() {
         initialMode={authModalMode}
         onSuccess={() => {}}
       />
+
+      {/* Profile Modal */}
+      {user && (
+        <ProfileModal
+          isOpen={profileModalOpen}
+          onClose={() => setProfileModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

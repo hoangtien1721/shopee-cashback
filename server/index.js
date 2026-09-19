@@ -109,9 +109,12 @@ app.get(['/health', '/api/health'], (req, res) => {
 const clientDist = path.join(__dirname, '../client/dist');
 if (fs.existsSync(clientDist)) {
   app.use(express.static(clientDist));
-  // Express 5 fallback handler for SPA
+  // Express fallback handler for SPA (disable cache for index.html to ensure instant updates)
   app.use((req, res) => {
     if (!req.path.startsWith('/api')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
       return res.sendFile(path.join(clientDist, 'index.html'));
     }
     res.status(404).json({ success: false, message: 'API route not found' });

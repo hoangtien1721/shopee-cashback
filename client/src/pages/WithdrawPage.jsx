@@ -14,7 +14,7 @@ import {
   Edit3
 } from 'lucide-react';
 
-export default function WithdrawPage({ onNavigate }) {
+export default function WithdrawPage({ onNavigate, onOpenProfile }) {
   const { user, refreshUser, updateProfile } = useAuth();
 
   const [withdrawals, setWithdrawals] = useState([]);
@@ -146,8 +146,8 @@ export default function WithdrawPage({ onNavigate }) {
               </div>
               <button
                 type="button"
-                onClick={() => setIsEditingBank(true)}
-                className="text-xs font-semibold text-orange-600 hover:text-orange-700 flex items-center gap-1"
+                onClick={onOpenProfile || (() => setIsEditingBank(true))}
+                className="text-xs font-semibold text-orange-600 hover:text-orange-700 flex items-center gap-1 cursor-pointer"
               >
                 <Edit3 className="w-3.5 h-3.5" />
                 <span>{user?.bank_account_number ? 'Thay đổi' : 'Thiết lập'}</span>
@@ -171,8 +171,9 @@ export default function WithdrawPage({ onNavigate }) {
               <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-xs text-rose-700 flex items-center justify-between">
                 <span>Bạn chưa thiết lập tài khoản ngân hàng nhận tiền!</span>
                 <button
-                  onClick={() => setIsEditingBank(true)}
-                  className="py-1 px-2.5 bg-rose-600 text-white font-bold rounded-lg text-xs"
+                  type="button"
+                  onClick={onOpenProfile || (() => setIsEditingBank(true))}
+                  className="py-1 px-2.5 bg-rose-600 text-white font-bold rounded-lg text-xs cursor-pointer"
                 >
                   Thêm ngay
                 </button>
