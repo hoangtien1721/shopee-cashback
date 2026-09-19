@@ -20,7 +20,8 @@ import {
   FileSpreadsheet,
   AlertCircle,
   Check,
-  Search
+  Search,
+  Sparkles
 } from 'lucide-react';
 
 export default function AdminDashboard({ onNavigate }) {
@@ -55,6 +56,7 @@ export default function AdminDashboard({ onNavigate }) {
     shopee_app_secret: '',
     shopee_affiliate_id: 'boxhoantien_affiliate',
     shopee_cookie: '',
+    scraper_api_key: '',
     google_client_id: '',
     google_client_secret: ''
   });
@@ -918,6 +920,51 @@ export default function AdminDashboard({ onNavigate }) {
                   <strong>Kết quả kiểm tra:</strong> {apiTestResult.message}
                 </div>
               )}
+
+              {/* TÍCH HỢP SCRAPERAPI ĐỂ LẤY GIÁ THẬT & VƯỢT CHẶN AKAMAI SHOPEE */}
+              <div className="p-4 bg-emerald-50/80 border border-emerald-200 rounded-2xl space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <h4 className="text-xs font-bold text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-emerald-600" />
+                    <span>Tự Động Cào Giá Thật Shopee Qua ScraperAPI (Vượt Chặn Akamai)</span>
+                  </h4>
+                  <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full shrink-0 ${
+                    settings.scraper_api_key
+                      ? 'bg-emerald-200 text-emerald-800 border border-emerald-300'
+                      : 'bg-amber-100 text-amber-800 border border-amber-200'
+                  }`}>
+                    {settings.scraper_api_key ? '✓ Đang kích hoạt ScraperAPI' : 'Chưa nhập Key (Đang dùng dữ liệu chuẩn)'}
+                  </span>
+                </div>
+
+                <p className="text-xs text-emerald-950 leading-relaxed">
+                  Shopee chặn server đám mây bằng Akamai bot-detection (mã lỗi 90309999). Khi bạn điền <strong>ScraperAPI Key</strong>, hệ thống sẽ tự động định tuyến qua mạng <strong>IP dân cư Việt Nam</strong> để bóc tách chính xác 100% <strong>Giá bán hiện tại</strong> và <strong>Hình ảnh gốc</strong> từ Shopee!
+                </p>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                    ScraperAPI Key
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="VD: a8c13f7e9b04..."
+                    value={settings.scraper_api_key || ''}
+                    onChange={(e) => setSettings({ ...settings, scraper_api_key: e.target.value })}
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl font-mono focus:outline-hidden bg-white"
+                  />
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] text-slate-500 mt-1.5">
+                    <span>💡 Miễn phí 5,000 lượt cào/tháng không cần thẻ tín dụng.</span>
+                    <a
+                      href="https://www.scraperapi.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-emerald-700 hover:text-emerald-800 font-semibold underline"
+                    >
+                      Đăng ký ScraperAPI miễn phí →
+                    </a>
+                  </div>
+                </div>
+              </div>
 
               {/* TÍCH HỢP GOOGLE OAUTH 2.0 (ĐĂNG NHẬP GMAIL) */}
               <div className="p-4 bg-blue-50/70 border border-blue-200 rounded-2xl space-y-3">

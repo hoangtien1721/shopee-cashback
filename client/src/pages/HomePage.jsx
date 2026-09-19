@@ -16,7 +16,9 @@ import {
   Search,
   Sparkles,
   ShoppingBag,
-  Tag
+  Tag,
+  Coins,
+  Info
 } from 'lucide-react';
 
 export default function HomePage({ onOpenAuth, onNavigate }) {
@@ -250,13 +252,14 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
               )}
             </form>
 
-            {/* CONVERSION RESULT CARD */}
+            {/* CONVERSION RESULT CARD (100% VUA HOAN TIEN LAYOUT) */}
             {convertedResult && (
               <div
                 id="result-section"
-                className="mt-5 pt-5 border-t border-gray-200 space-y-4 animate-in fade-in duration-150"
+                className="mt-6 pt-6 border-t border-gray-200/90 space-y-4 animate-in fade-in duration-200"
               >
-                <div className="flex flex-col sm:flex-row gap-4 items-start">
+                {/* Product Header: Image, Title & Badges */}
+                <div className="flex flex-col sm:flex-row gap-4 items-start bg-white p-4 rounded-2xl border border-gray-200 shadow-xs">
                   {/* Thumbnail */}
                   <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-orange-50 border border-orange-200/80 shrink-0 flex items-center justify-center shadow-xs">
                     {convertedResult.product_image ? (
@@ -280,76 +283,88 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
                   {/* Info */}
                   <div className="flex-1 space-y-2 min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-semibold">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Sản phẩm áp dụng hoàn tiền</span>
+                        <span>Sản phẩm hợp lệ nhận hoàn tiền</span>
                       </div>
                       {convertedResult.category_name && (
-                        <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gray-100 border border-gray-200 text-gray-700 text-[11px] font-medium">
+                        <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gray-100 border border-gray-200 text-gray-700 text-xs font-medium">
                           <Tag className="w-3 h-3 text-gray-500" />
                           <span>{convertedResult.category_name}</span>
                         </div>
                       )}
                     </div>
 
-                    <h3 className="font-bold text-gray-900 text-sm leading-snug line-clamp-2">
+                    <h3 className="font-bold text-gray-900 text-base leading-snug line-clamp-2">
                       {convertedResult.product_title || 'Sản phẩm Shopee hợp lệ'}
                     </h3>
+                  </div>
+                </div>
 
-                    {/* Rates Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                      {/* Box 1: Tỷ lệ hoàn tiền */}
-                      <div className="p-3.5 rounded-xl bg-orange-50/90 border border-orange-200">
-                        <div className="text-[10px] text-orange-800 uppercase font-bold tracking-wider">
-                          Tỷ lệ hoàn tiền
-                        </div>
-                        <div className="text-xl sm:text-2xl font-black text-orange-600 mt-0.5">
-                          {convertedResult.cashback_rate || 'Lên đến 10.5%'}
-                        </div>
-                        <div className="text-[11px] text-orange-900/80 mt-1 font-medium">
-                          Áp dụng cho mọi đơn hàng Shopee
-                        </div>
-                      </div>
+                {/* 2 Cards Side-by-Side: Giá bán hiện tại & Tiền hoàn dự kiến */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  {/* Card 1: GIÁ BÁN HIỆN TẠI */}
+                  <div className="p-4 rounded-2xl bg-white border border-gray-200/90 shadow-xs flex flex-col justify-between">
+                    <div className="flex items-center justify-between text-xs font-bold text-gray-500 uppercase tracking-wider">
+                      <span className="flex items-center gap-1.5">
+                        <Tag className="w-4 h-4 text-gray-400" />
+                        GIÁ BÁN HIỆN TẠI
+                      </span>
+                      <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                        Niêm yết Shopee
+                      </span>
+                    </div>
+                    <div className="mt-2 text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
+                      {convertedResult.product_price && convertedResult.product_price > 0
+                        ? formatVND(convertedResult.product_price)
+                        : 'Theo hóa đơn Shopee'}
+                    </div>
+                    <div className="text-[11px] text-gray-500 mt-1 font-medium">
+                      Chưa tính voucher giảm giá bổ sung
+                    </div>
+                  </div>
 
-                      {/* Box 2: Trạng thái kích hoạt */}
-                      <div className="p-3.5 rounded-xl bg-emerald-50/90 border border-emerald-200">
-                        <div className="text-[10px] text-emerald-800 uppercase font-bold tracking-wider">
-                          Trạng thái kích hoạt
-                        </div>
-                        <div className="text-base sm:text-lg font-black text-emerald-700 mt-0.5 flex items-center gap-1.5">
-                          <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-                          <span>Đã sẵn sàng nhận tiền hoàn</span>
-                        </div>
-                        <div className="text-[11px] text-emerald-800/80 mt-1 font-medium">
-                          Tự động ghi nhận vào ví sau khi nhận hàng
-                        </div>
-                      </div>
+                  {/* Card 2: TIỀN HOÀN DỰ KIẾN */}
+                  <div className="p-4 rounded-2xl bg-gradient-to-br from-orange-50 via-amber-50/50 to-orange-50/80 border-2 border-orange-300 shadow-xs flex flex-col justify-between">
+                    <div className="flex items-center justify-between text-xs font-bold text-orange-900 uppercase tracking-wider">
+                      <span className="flex items-center gap-1.5">
+                        <Coins className="w-4 h-4 text-orange-600" />
+                        TIỀN HOÀN DỰ KIẾN
+                      </span>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-200/80 text-orange-800">
+                        Cộng vào Ví
+                      </span>
+                    </div>
+                    <div className="mt-2 text-2xl sm:text-3xl font-black text-orange-600 tracking-tight">
+                      {convertedResult.estimated_cashback && convertedResult.estimated_cashback > 0
+                        ? formatVND(convertedResult.estimated_cashback)
+                        : `Lên đến ${convertedResult.cashback_rate || '10.5%'}`}
+                    </div>
+                    <div className="text-[11px] text-orange-800/80 mt-1 font-medium">
+                      Tỷ lệ hoàn: ~{convertedResult.cashback_rate || '4.0%'} (50% hoa hồng Shopee)
                     </div>
                   </div>
                 </div>
 
-                {/* Terms notice */}
-                <div className="p-3.5 bg-gray-50 rounded-xl border border-gray-200 text-xs text-gray-600 space-y-1.5">
-                  <div className="font-semibold text-gray-800 flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                    <span>Quyền lợi của bạn khi mua hàng qua BoxHoanTien:</span>
+                {/* Disclaimer Notice Box (Exact Vua Hoan Tien notice) */}
+                <div className="p-3.5 bg-amber-50/80 rounded-xl border border-amber-200/90 text-xs text-amber-900 flex items-start gap-2.5 leading-relaxed">
+                  <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="font-semibold text-amber-950">Lưu ý: </strong>
+                    Tiền hoàn hiển thị là tạm tính. Số tiền thực nhận sẽ được ghi nhận theo giá trị đơn hàng sau khi trừ voucher và mã giảm giá trên hóa đơn thanh toán thực tế của Shopee.
                   </div>
-                  <ul className="text-[11px] text-gray-600 space-y-1 list-disc list-inside leading-relaxed pl-1">
-                    <li><strong>Giữ nguyên 100% ưu đãi:</strong> Áp dụng đầy đủ mọi Voucher Shopee, Freeship, Shopee Live và mã giảm giá của Shop.</li>
-                    <li><strong>Hoàn tiền tự động:</strong> Shopee tự động tính số tiền hoàn trên hóa đơn thanh toán thực tế và cộng vào Ví của bạn.</li>
-                    <li><strong>Rút tiền linh hoạt:</strong> Rút tiền trực tiếp về tài khoản ngân hàng của bạn trong vòng 3 ngày làm việc.</li>
-                  </ul>
                 </div>
 
-                {/* Single direct action button */}
+                {/* Single Direct CTA Button: Mở Mua Hàng Nhận Hoàn Tiền */}
                 <a
                   href={convertedResult.localRedirectUrl || convertedResult.affiliate_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3.5 px-6 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white rounded-xl text-base font-bold text-center flex items-center justify-center gap-2.5 cursor-pointer transition-all shadow-md hover:shadow-lg active:scale-[0.99]"
+                  className="w-full py-4 px-6 bg-gradient-to-r from-orange-600 via-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white rounded-xl text-base font-bold text-center flex items-center justify-center gap-2.5 cursor-pointer transition-all shadow-lg shadow-orange-600/25 hover:shadow-xl hover:scale-[1.01] active:scale-[0.99]"
                 >
-                  <ExternalLink className="w-5 h-5" />
-                  <span>Chuyển đến Shopee mua hàng & Nhận hoàn tiền</span>
+                  <ShoppingBag className="w-5 h-5" />
+                  <span>Mở Mua Hàng Nhận Hoàn Tiền</span>
+                  <ExternalLink className="w-4 h-4 opacity-80 ml-1" />
                 </a>
               </div>
             )}

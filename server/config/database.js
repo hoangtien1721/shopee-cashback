@@ -111,6 +111,7 @@ function initDb() {
   insertSetting.run('site_name', 'Box Hoàn Tiền - Nền tảng hoàn tiền Shopee 50%', 'Tên website');
   insertSetting.run('google_client_id', process.env.GOOGLE_CLIENT_ID || '', 'Google OAuth Client ID cho đăng nhập Gmail');
   insertSetting.run('google_client_secret', process.env.GOOGLE_CLIENT_SECRET || '', 'Google OAuth Client Secret');
+  insertSetting.run('scraper_api_key', process.env.SCRAPER_API_KEY || '', 'ScraperAPI Key để cào giá thật và vượt Akamai Shopee');
 
   console.log('Database initialized successfully with WAL mode at:', dbPath);
 }
