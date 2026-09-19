@@ -417,6 +417,21 @@ async function analyzeShopeeProduct(url, explicitTitle = '', customPrice = 0) {
     price = 299000;
     cashbackRate = '10.5%';
     estimatedCashback = 15697;
+  } else if (lower.includes('biên hòa') || (lower.includes('đường') && lower.includes('mía'))) {
+    category = 'Bách Hóa Online & Tiêu Dùng';
+    price = 105000;
+    cashbackRate = '7.0%';
+    estimatedCashback = 7350;
+  } else if (lower.includes('topgia') || (lower.includes('giấy vệ sinh') && lower.includes('treo tường'))) {
+    category = 'Bách Hóa Online & Tiêu Dùng';
+    price = 119000;
+    cashbackRate = '7.0%';
+    estimatedCashback = 8330;
+  } else if (lower.includes('unicare') || lower.includes('khẩu trang 6d') || (lower.includes('khẩu trang') && lower.includes('200'))) {
+    category = 'Sức Khỏe & Đời Sống';
+    price = 65000;
+    cashbackRate = '7.0%';
+    estimatedCashback = 4550;
   } else if (lower.includes('áo thun') || lower.includes('áo sơ mi') || lower.includes('áo khoác') || lower.includes('quần jean') || lower.includes('quần tây') || lower.includes('váy') || lower.includes('đầm') || lower.includes('giày sneaker') || lower.includes('giày cao gót') || lower.includes('túi xách') || lower.includes('túi đeo chéo') || lower.includes('balo')) {
     category = 'Thời Trang & Phụ Kiện';
     cashbackRate = '10.5%';

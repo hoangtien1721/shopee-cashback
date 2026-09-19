@@ -298,32 +298,65 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
 
                     {/* Rates Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                      {/* Box 1: Tỷ lệ hoàn tiền */}
-                      <div className="p-3.5 rounded-xl bg-orange-50/90 border border-orange-200">
-                        <div className="text-[10px] text-orange-800 uppercase font-bold tracking-wider">
-                          Tỷ lệ hoàn tiền
-                        </div>
-                        <div className="text-xl sm:text-2xl font-black text-orange-600 mt-0.5">
-                          {convertedResult.cashback_rate || 'Lên đến 10.5%'}
-                        </div>
-                        <div className="text-[11px] text-orange-900/80 mt-1 font-medium">
-                          Áp dụng cho mọi đơn hàng Shopee
-                        </div>
-                      </div>
+                      {convertedResult.product_price && convertedResult.product_price > 0 ? (
+                        <>
+                          {/* Box 1: Giá tham khảo */}
+                          <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-200">
+                            <div className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">
+                              Giá tham khảo
+                            </div>
+                            <div className="text-xl sm:text-2xl font-black text-gray-900 mt-0.5">
+                              {formatVND(convertedResult.product_price)}
+                            </div>
+                            <div className="text-[11px] text-gray-500 mt-1 font-medium">
+                              Ước tính theo mẫu sản phẩm
+                            </div>
+                          </div>
 
-                      {/* Box 2: Trạng thái kích hoạt */}
-                      <div className="p-3.5 rounded-xl bg-emerald-50/90 border border-emerald-200">
-                        <div className="text-[10px] text-emerald-800 uppercase font-bold tracking-wider">
-                          Trạng thái kích hoạt
-                        </div>
-                        <div className="text-base sm:text-lg font-black text-emerald-700 mt-0.5 flex items-center gap-1.5">
-                          <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-                          <span>Đã sẵn sàng nhận tiền hoàn</span>
-                        </div>
-                        <div className="text-[11px] text-emerald-800/80 mt-1 font-medium">
-                          Tự động ghi nhận vào ví sau khi nhận hàng
-                        </div>
-                      </div>
+                          {/* Box 2: Tiền hoàn dự kiến */}
+                          <div className="p-3.5 rounded-xl bg-orange-50/90 border border-orange-200">
+                            <div className="text-[10px] text-orange-800 uppercase font-bold tracking-wider">
+                              Tiền hoàn dự kiến ({convertedResult.cashback_rate || '7.0%'})
+                            </div>
+                            <div className="text-xl sm:text-2xl font-black text-orange-600 mt-0.5">
+                              ~{formatVND(convertedResult.estimated_cashback)}
+                            </div>
+                            <div className="text-[11px] text-emerald-700 mt-1 font-medium flex items-center gap-1">
+                              <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                              <span>Tự động cộng ví sau khi nhận hàng</span>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          {/* Box 1: Tỷ lệ hoàn tiền */}
+                          <div className="p-3.5 rounded-xl bg-orange-50/90 border border-orange-200">
+                            <div className="text-[10px] text-orange-800 uppercase font-bold tracking-wider">
+                              Tỷ lệ hoàn tiền
+                            </div>
+                            <div className="text-xl sm:text-2xl font-black text-orange-600 mt-0.5">
+                              {convertedResult.cashback_rate || 'Lên đến 10.5%'}
+                            </div>
+                            <div className="text-[11px] text-orange-900/80 mt-1 font-medium">
+                              Áp dụng cho mọi đơn hàng Shopee
+                            </div>
+                          </div>
+
+                          {/* Box 2: Trạng thái kích hoạt */}
+                          <div className="p-3.5 rounded-xl bg-emerald-50/90 border border-emerald-200">
+                            <div className="text-[10px] text-emerald-800 uppercase font-bold tracking-wider">
+                              Trạng thái kích hoạt
+                            </div>
+                            <div className="text-base sm:text-lg font-black text-emerald-700 mt-0.5 flex items-center gap-1.5">
+                              <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                              <span>Đã sẵn sàng nhận tiền hoàn</span>
+                            </div>
+                            <div className="text-[11px] text-emerald-800/80 mt-1 font-medium">
+                              Tự động ghi nhận vào ví sau khi nhận hàng
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -341,41 +374,15 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
                   </ul>
                 </div>
 
-                {/* Short link */}
-                <div className="space-y-1 text-xs">
-                  <span className="font-semibold text-gray-700">Liên kết mua hàng có gắn mã theo dõi (Sub ID):</span>
-                  <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-md border border-gray-200">
-                    <div className="flex-1 font-mono text-xs text-gray-700 truncate select-all">
-                      {convertedResult.localRedirectUrl || convertedResult.affiliate_url}
-                    </div>
-                    <div className="flex items-center gap-1 shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => setShowQrModal(true)}
-                        className="px-2 py-1 bg-white hover:bg-gray-100 border border-gray-200 rounded text-gray-700 font-medium text-xs cursor-pointer"
-                      >
-                        Mã QR
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleCopy(convertedResult.localRedirectUrl || convertedResult.affiliate_url)}
-                        className="px-2.5 py-1 bg-white hover:bg-gray-100 border border-gray-200 rounded text-gray-700 font-medium text-xs cursor-pointer"
-                      >
-                        {copied ? 'Đã chép' : 'Sao chép'}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Big CTA */}
+                {/* Single direct action button */}
                 <a
-                  href={convertedResult.affiliate_url}
+                  href={convertedResult.localRedirectUrl || convertedResult.affiliate_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-md text-sm font-semibold text-center flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-xs"
+                  className="w-full py-3.5 px-6 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white rounded-xl text-base font-bold text-center flex items-center justify-center gap-2.5 cursor-pointer transition-all shadow-md hover:shadow-lg active:scale-[0.99]"
                 >
-                  <ExternalLink className="w-4 h-4" />
-                  <span>Chuyển đến Shopee mua hàng</span>
+                  <ExternalLink className="w-5 h-5" />
+                  <span>Chuyển đến Shopee mua hàng & Nhận hoàn tiền</span>
                 </a>
               </div>
             )}
