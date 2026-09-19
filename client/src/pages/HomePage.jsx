@@ -24,7 +24,6 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
 
   // Converter state
   const [inputUrl, setInputUrl] = useState('');
-  const [customPrice, setCustomPrice] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [convertedResult, setConvertedResult] = useState(null);
@@ -97,12 +96,10 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
 
     setLoading(true);
     try {
-      const cleanPrice = customPrice ? parseInt(customPrice.replace(/\D/g, ''), 10) : 0;
       const res = await apiRequest('/links/convert', {
         method: 'POST',
         body: JSON.stringify({
-          url: targetUrl.trim(),
-          price: cleanPrice
+          url: targetUrl.trim()
         })
       });
 
@@ -301,82 +298,47 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
 
                     {/* Rates Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                      <div className="p-3 rounded-xl bg-gray-50 border border-gray-200">
-                        <div className="text-[10px] text-gray-500 uppercase font-semibold">
-                          {convertedResult.product_price && convertedResult.product_price > 0 ? 'Giá tham khảo' : 'Giá thanh toán'}
+                      {/* Box 1: Tỷ lệ hoàn tiền */}
+                      <div className="p-3.5 rounded-xl bg-orange-50/90 border border-orange-200">
+                        <div className="text-[10px] text-orange-800 uppercase font-bold tracking-wider">
+                          Tỷ lệ hoàn tiền
                         </div>
-                        <div className="text-sm font-bold text-gray-900 mt-0.5">
-                          {convertedResult.product_price && convertedResult.product_price > 0
-                            ? formatVND(convertedResult.product_price)
-                            : 'Theo đơn hàng Shopee'}
+                        <div className="text-xl sm:text-2xl font-black text-orange-600 mt-0.5">
+                          {convertedResult.cashback_rate || 'Lên đến 10.5%'}
                         </div>
-                        <div className="text-[11px] text-gray-500 mt-0.5">
-                          {convertedResult.product_price && convertedResult.product_price > 0 ? 'Ước tính theo mẫu' : 'Theo phân loại hàng chọn mua'}
+                        <div className="text-[11px] text-orange-900/80 mt-1 font-medium">
+                          Áp dụng cho mọi đơn hàng Shopee
                         </div>
                       </div>
 
-                      <div className="p-3 rounded-xl bg-orange-50 border border-orange-200">
-                        <div className="text-[10px] text-orange-800 uppercase font-semibold">
-                          {convertedResult.product_price && convertedResult.product_price > 0 && convertedResult.estimated_cashback > 0
-                            ? 'Tiền hoàn dự kiến'
-                            : 'Tỷ lệ hoàn tiền'}
+                      {/* Box 2: Trạng thái kích hoạt */}
+                      <div className="p-3.5 rounded-xl bg-emerald-50/90 border border-emerald-200">
+                        <div className="text-[10px] text-emerald-800 uppercase font-bold tracking-wider">
+                          Trạng thái kích hoạt
                         </div>
-                        <div className="text-base font-extrabold text-orange-600 mt-0.5">
-                          {convertedResult.product_price && convertedResult.product_price > 0 && convertedResult.estimated_cashback > 0
-                            ? `~${formatVND(convertedResult.estimated_cashback)}`
-                            : `Lên đến ${convertedResult.cashback_rate || '10.5%'}`}
+                        <div className="text-base sm:text-lg font-black text-emerald-700 mt-0.5 flex items-center gap-1.5">
+                          <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                          <span>Đã sẵn sàng nhận tiền hoàn</span>
                         </div>
-                        <div className="text-[11px] text-emerald-700 font-medium mt-0.5 flex items-center gap-1">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
-                          <span>Tự động cộng ví sau khi nhận hàng</span>
+                        <div className="text-[11px] text-emerald-800/80 mt-1 font-medium">
+                          Tự động ghi nhận vào ví sau khi nhận hàng
                         </div>
-                      </div>
-                    </div>
-
-                    {/* Inline Quick Price Calculator */}
-                    <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 bg-gray-50/80 p-2.5 rounded-xl border border-gray-200">
-                      <div className="text-[11px] text-gray-600 font-medium flex items-center gap-1.5">
-                        <Sparkles className="w-3.5 h-3.5 text-orange-600 shrink-0" />
-                        <span>Nhập giá đơn hàng để tính nhanh tiền hoàn:</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 w-full sm:w-auto">
-                        <div className="relative flex-1 sm:w-36">
-                          <input
-                            type="text"
-                            placeholder="VD: 85.000"
-                            value={customPrice}
-                            onChange={(e) => setCustomPrice(e.target.value)}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                handleConvert(null);
-                              }
-                            }}
-                            className="w-full px-2.5 py-1 text-xs bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 font-mono text-gray-900"
-                          />
-                          <span className="absolute right-2 top-1 text-[11px] text-gray-400 font-sans">₫</span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => handleConvert(null)}
-                          className="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg text-xs cursor-pointer shadow-2xs whitespace-nowrap"
-                        >
-                          Tính ngay
-                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Terms notice */}
-                <div className="p-3.5 bg-amber-50/70 rounded-xl border border-amber-200/80 text-xs text-amber-900 space-y-1">
-                  <div className="font-bold flex items-center gap-1.5 text-amber-800">
-                    <Sparkles className="w-3.5 h-3.5 text-orange-600" />
-                    <span>Cơ chế tính tiền hoàn Shopee:</span>
+                <div className="p-3.5 bg-gray-50 rounded-xl border border-gray-200 text-xs text-gray-600 space-y-1.5">
+                  <div className="font-semibold text-gray-800 flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                    <span>Quyền lợi của bạn khi mua hàng qua BoxHoanTien:</span>
                   </div>
-                  <p className="leading-relaxed text-amber-800/90 text-[11px]">
-                    Tiền hoàn được tính tự động dựa trên <strong>số tiền thực tế bạn thanh toán</strong> sau khi trừ các mã giảm giá và voucher của Shop và Shopee. Tiền hoàn sẽ tự động ghi nhận vào ví <strong>BoxHoanTien</strong> sau khi Shopee hoàn tất giao hàng.
-                  </p>
+                  <ul className="text-[11px] text-gray-600 space-y-1 list-disc list-inside leading-relaxed pl-1">
+                    <li><strong>Giữ nguyên 100% ưu đãi:</strong> Áp dụng đầy đủ mọi Voucher Shopee, Freeship, Shopee Live và mã giảm giá của Shop.</li>
+                    <li><strong>Hoàn tiền tự động:</strong> Shopee tự động tính số tiền hoàn trên hóa đơn thanh toán thực tế và cộng vào Ví của bạn.</li>
+                    <li><strong>Rút tiền linh hoạt:</strong> Rút tiền trực tiếp về tài khoản ngân hàng của bạn trong vòng 3 ngày làm việc.</li>
+                  </ul>
                 </div>
 
                 {/* Short link */}
