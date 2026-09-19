@@ -21,6 +21,7 @@ import {
   Box
 } from 'lucide-react';
 import { formatVND } from '../services/api';
+import ProfileModal from './ProfileModal';
 
 export default function Navbar({ activeTab, setActiveTab, onOpenAuth }) {
   const { user, logout, isAdmin } = useAuth();
@@ -134,6 +135,13 @@ export default function Navbar({ activeTab, setActiveTab, onOpenAuth }) {
 
                     <div className="pt-2 space-y-1 font-medium">
                       <button
+                        onClick={() => { setShowProfileModal(true); setDropdownOpen(false); }}
+                        className="w-full text-left py-1.5 px-2 hover:bg-orange-50/80 rounded text-gray-800 font-semibold flex items-center gap-2 transition-colors cursor-pointer"
+                      >
+                        <User className="w-3.5 h-3.5 text-orange-600" />
+                        <span>Thông tin cá nhân</span>
+                      </button>
+                      <button
                         onClick={() => { setActiveTab('dashboard'); setDropdownOpen(false); }}
                         className="w-full text-left py-1.5 px-2 hover:bg-gray-50 rounded text-gray-700"
                       >
@@ -189,9 +197,30 @@ export default function Navbar({ activeTab, setActiveTab, onOpenAuth }) {
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-gray-200 bg-white px-4 py-3 space-y-2 text-xs">
           {user ? (
-            <div className="pb-2 mb-2 border-b border-gray-100 flex justify-between items-center">
-              <span className="font-medium text-gray-600">{user.full_name}</span>
-              <span className="font-bold text-orange-600">{formatVND(user.available_balance)}</span>
+            <div className="pb-2 mb-2 border-b border-gray-100 space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-900">{user.full_name}</span>
+                <span className="font-bold text-orange-600">{formatVND(user.available_balance)}</span>
+              </div>
+              <button
+                onClick={() => { setShowProfileModal(true); setMobileMenuOpen(false); }}
+                className="w-full py-2 px-2.5 bg-orange-50 hover:bg-orange-100 rounded-md text-orange-700 font-semibold flex items-center gap-2 text-xs transition-colors"
+              >
+                <User className="w-4 h-4 text-orange-600" />
+                <span>Thông tin cá nhân & Ngân hàng</span>
+              </button>
+              <button
+                onClick={() => { setActiveTab('dashboard'); setMobileMenuOpen(false); }}
+                className="w-full text-left py-1.5 px-1 text-gray-700 font-medium"
+              >
+                Lịch sử hoàn tiền
+              </button>
+              <button
+                onClick={() => { setActiveTab('withdraw'); setMobileMenuOpen(false); }}
+                className="w-full text-left py-1.5 px-1 text-orange-600 font-semibold"
+              >
+                Yêu cầu rút tiền
+              </button>
             </div>
           ) : (
             <div className="flex gap-2 pb-2 mb-2 border-b border-gray-100">
@@ -241,6 +270,14 @@ export default function Navbar({ activeTab, setActiveTab, onOpenAuth }) {
           >
             Mời bạn bè nhận 30.000 đ
           </button>
+          {user && (
+            <button
+              onClick={() => { logout(); setMobileMenuOpen(false); }}
+              className="w-full text-left py-1.5 text-red-600 font-medium pt-2 border-t border-gray-100"
+            >
+              Đăng xuất
+            </button>
+          )}
         </div>
       )}
 
@@ -272,6 +309,14 @@ export default function Navbar({ activeTab, setActiveTab, onOpenAuth }) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Profile Modal */}
+      {user && (
+        <ProfileModal
+          isOpen={showProfileModal}
+          onClose={() => setShowProfileModal(false)}
+        />
       )}
     </header>
   );
