@@ -657,7 +657,7 @@ async function testShopeeApi(req, res) {
     return res.json({
       success: true,
       mode: 'universal_redirect',
-      message: `✅ Hệ thống đang hoạt động ở chế độ "Universal Affiliate Link" (Không cần Open API). Mọi link Shopee của người dùng sẽ tự động chuyển đổi thành: https://s.shopee.vn/an_redir?... gắn mã Partner ID "${partnerId}" và Sub ID người mua hàng.`
+      message: `✅ Hệ thống đang hoạt động ở chế độ "Universal Affiliate Link" (Không cần Open API). Mọi link Shopee của người dùng sẽ tự động chuyển đổi thành: https://s.shopee.vn/an_redir?... gắn mã Affiliate ID "${partnerId}" và Sub ID người mua hàng.`
     });
 
   } catch (error) {

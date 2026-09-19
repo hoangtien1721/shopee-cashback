@@ -841,7 +841,7 @@ export default function AdminDashboard({ onNavigate }) {
                 </p>
                 <div className="space-y-2 text-xs text-orange-950 pl-2">
                   <div className="p-2.5 bg-white/80 rounded-xl border border-orange-200/60">
-                    <span className="font-bold text-orange-700">⭐ Cách 1 (Khuyên Dùng Nhất - Không Cần API):</span> Điền mã <strong>Shopee Affiliate Partner ID</strong> (mã tiếp thị liên kết của bạn). Hệ thống sẽ tự động tạo Universal Tracking Link chuẩn của Shopee (<code>https://s.shopee.vn/an_redir?...</code>) gắn Sub ID người mua. Hoạt động vĩnh viễn, không bao giờ hết hạn!
+                    <span className="font-bold text-orange-700">⭐ Cách 1 (Khuyên Dùng Nhất - Không Cần API):</span> Điền mã <strong>Shopee Affiliate ID</strong> (mã tiếp thị liên kết của bạn). Hệ thống sẽ tự động tạo Universal Tracking Link chuẩn của Shopee (<code>https://s.shopee.vn/an_redir?...</code>) gắn Sub ID người mua. Hoạt động vĩnh viễn, không bao giờ hết hạn!
                   </div>
                   <div className="p-2.5 bg-white/80 rounded-xl border border-orange-200/60">
                     <span className="font-bold text-purple-700">⚡ Cách 2 (Tự Động Sinh Link s.shopee.vn Qua Cookie):</span> Lấy cookie đăng nhập <code>SPC_EC</code> từ trình duyệt khi bạn đăng nhập vào <u>affiliate.shopee.vn</u> rồi dán vào ô bên dưới. Hệ thống sẽ tự động gọi API nội bộ của Shopee để sinh link ngắn <code>s.shopee.vn</code> chính chủ của bạn!
@@ -849,14 +849,14 @@ export default function AdminDashboard({ onNavigate }) {
                 </div>
               </div>
 
-              {/* Input 1: Affiliate Partner ID */}
+              {/* Input 1: Affiliate ID */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  ⭐ Shopee Affiliate Partner ID (Mã đối tác tiếp thị của bạn)
+                  ⭐ Shopee Affiliate ID (Mã tiếp thị liên kết của bạn)
                 </label>
                 <input
                   type="text"
-                  placeholder="VD: viva_cashback hoặc mã số KOL của bạn (VD: 17382910...)"
+                  placeholder="VD: boxhoantien_affiliate hoặc mã số KOL của bạn (VD: 17382910...)"
                   value={settings.shopee_affiliate_id || ''}
                   onChange={(e) => setSettings({ ...settings, shopee_affiliate_id: e.target.value })}
                   className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl font-mono focus:outline-hidden"

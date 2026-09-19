@@ -10,7 +10,7 @@ export default function Footer() {
           <div className="flex items-start gap-3">
             <ShieldCheck className="w-5 h-5 text-gray-300 shrink-0 mt-0.5" />
             <div>
-              <div className="text-gray-200 font-semibold text-sm">Đối tác tiếp thị liên kết Shopee</div>
+              <div className="text-gray-200 font-semibold text-sm">Tiếp thị liên kết hoàn tiền Shopee</div>
               <div className="text-gray-500 text-xs mt-0.5">Tự động đồng bộ và đối soát dữ liệu với chương trình Shopee Affiliate.</div>
             </div>
           </div>
@@ -78,7 +78,7 @@ export default function Footer() {
             © 2026 BoxHoanTien.com. Tất cả các quyền được bảo lưu.
           </div>
           <div>
-            Phiên bản hệ thống 2.4.0 • Shopee Affiliate Integrated
+            Phiên bản hệ thống 2.4.0 • BoxHoanTien Platform
           </div>
         </div>
       </div>

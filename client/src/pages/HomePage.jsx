@@ -139,7 +139,7 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
           <div className="mb-7 space-y-2.5 text-center sm:text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100/90 border border-orange-200/90 text-orange-800 text-xs font-semibold shadow-2xs">
               <span className="w-2 h-2 rounded-full bg-orange-600 animate-pulse"></span>
-              <span>BoxHoanTien.com • Shopee Affiliate Official Partner</span>
+              <span>BoxHoanTien.com • Nền tảng hoàn tiền mua sắm Shopee</span>
             </div>
 
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
