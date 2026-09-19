@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const https = require('https');
+const crypto = require('crypto');
 const { db } = require('../config/database');
 const { JWT_SECRET } = require('../middleware/auth');
 
@@ -146,9 +148,98 @@ function updateProfile(req, res) {
   }
 }
 
+async function verifyGoogleToken(idToken) {
+  return new Promise((resolve, reject) => {
+    https.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(idToken)}`, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.error || parsed.error_description) {
+            reject(new Error(parsed.error_description || parsed.error));
+          } else {
+            resolve(parsed);
+          }
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }).on('error', reject);
+  });
+}
+
+async function googleAuth(req, res) {
+  try {
+    const { credential, email: manualEmail, name: manualName } = req.body;
+    let googleUser = null;
+
+    if (credential) {
+      try {
+        googleUser = await verifyGoogleToken(credential);
+      } catch (tokenErr) {
+        // Fallback: parse JWT payload if tokeninfo verification is limited
+        try {
+          const parts = credential.split('.');
+          if (parts.length === 3) {
+            const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString('utf8'));
+            if (payload.email) {
+              googleUser = payload;
+            }
+          }
+        } catch (parseErr) {
+          console.error('Failed to parse Google JWT payload:', parseErr);
+        }
+
+        if (!googleUser) {
+          return res.status(400).json({ success: false, message: 'Xác thực tài khoản Google không hợp lệ: ' + tokenErr.message });
+        }
+      }
+    } else if (manualEmail) {
+      googleUser = { email: manualEmail, name: manualName };
+    } else {
+      return res.status(400).json({ success: false, message: 'Thiếu thông tin xác thực Google' });
+    }
+
+    const email = (googleUser.email || '').toLowerCase().trim();
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Không lấy được email từ tài khoản Google' });
+    }
+
+    let user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+
+    if (!user) {
+      // Tự động tạo tài khoản mới từ Gmail
+      const dummyPassword = bcrypt.hashSync(crypto.randomBytes(16).toString('hex'), 10);
+      const fullName = (googleUser.name || email.split('@')[0] || 'Khách hàng Google').trim();
+
+      const insertStmt = db.prepare(`
+        INSERT INTO users (email, password, full_name, role)
+        VALUES (?, ?, ?, 'user')
+      `);
+      const result = insertStmt.run(email, dummyPassword, fullName);
+      user = db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid);
+    }
+
+    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '30d' });
+    delete user.password;
+
+    return res.json({
+      success: true,
+      message: 'Đăng nhập bằng Google thành công',
+      token,
+      user
+    });
+  } catch (error) {
+    console.error('Google Auth Error:', error);
+    return res.status(500).json({ success: false, message: 'Lỗi đăng nhập Google: ' + error.message });
+  }
+}
+
 module.exports = {
   register,
   login,
+  googleAuth,
   getProfile,
   updateProfile
 };

@@ -663,6 +663,27 @@ async function testShopeeApi(req, res) {
   }
 }
 
+function getPublicSettings(req, res) {
+  try {
+    const googleClientIdSetting = db.prepare('SELECT value FROM system_settings WHERE key = ?').get('google_client_id');
+    const siteNameSetting = db.prepare('SELECT value FROM system_settings WHERE key = ?').get('site_name');
+    return res.json({
+      success: true,
+      settings: {
+        google_client_id: process.env.GOOGLE_CLIENT_ID || (googleClientIdSetting ? googleClientIdSetting.value : ''),
+        site_name: siteNameSetting ? siteNameSetting.value : 'Box Hoàn Tiền'
+      }
+    });
+  } catch (error) {
+    return res.json({
+      success: true,
+      settings: {
+        google_client_id: process.env.GOOGLE_CLIENT_ID || '',
+        site_name: 'Box Hoàn Tiền'
+      }
+    });
+  }
+}
 
 module.exports = {
   getAdminStats,
@@ -676,5 +697,6 @@ module.exports = {
   processWithdrawal,
   getSettings,
   updateSettings,
-  testShopeeApi
+  testShopeeApi,
+  getPublicSettings
 };

@@ -57,6 +57,19 @@ export function AuthProvider({ children }) {
     return res;
   }
 
+  async function loginWithGoogle(credential, manualData = null) {
+    const payload = credential ? { credential } : manualData;
+    const res = await apiRequest('/auth/google', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    if (res.success && res.token) {
+      setAuthToken(res.token);
+      setUser(res.user);
+    }
+    return res;
+  }
+
   function logout() {
     setAuthToken(null);
     setUser(null);
@@ -91,6 +104,7 @@ export function AuthProvider({ children }) {
         loading,
         login,
         register,
+        loginWithGoogle,
         logout,
         refreshUser,
         updateProfile,

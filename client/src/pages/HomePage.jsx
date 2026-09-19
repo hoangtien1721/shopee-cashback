@@ -12,7 +12,9 @@ import {
   Clock,
   Percent,
   Copy,
-  Check
+  Check,
+  Search,
+  Sparkles
 } from 'lucide-react';
 
 export default function HomePage({ onOpenAuth, onNavigate }) {
@@ -130,15 +132,14 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
 
   return (
     <div className="space-y-12 pb-16 bg-[#F8F9FA]">
-      {/* 1. HERO CONVERTER SECTION (CORE FOCUS) */}
-      <section className="bg-white border-b border-gray-200 py-10 px-4 sm:px-6 lg:px-8">
+      {/* 1. HERO CONVERTER SECTION (PROMINENTLY HIGHLIGHTED) */}
+      <section className="bg-gradient-to-b from-orange-50/70 via-amber-50/25 to-[#F8F9FA] border-b border-gray-200/80 pt-12 pb-14 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="mb-6 space-y-2 text-center sm:text-left">
-            <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-              <span>Box Hoàn Tiền</span>
-              <span className="text-gray-300">•</span>
-              <span className="text-gray-700">Shopee Affiliate Partner</span>
+          <div className="mb-7 space-y-2.5 text-center sm:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100/90 border border-orange-200/90 text-orange-800 text-xs font-semibold shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-orange-600 animate-pulse"></span>
+              <span>BoxHoanTien.com • Shopee Affiliate Official Partner</span>
             </div>
 
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
@@ -146,55 +147,80 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
             </h1>
 
             <p className="text-sm text-gray-600 max-w-2xl leading-relaxed">
-              Dán đường dẫn sản phẩm Shopee cần mua vào ô bên dưới để lấy link kích hoạt hoàn tiền. Tiền hoàn tự động ghi nhận vào ví và rút về ngân hàng trong 3 ngày làm việc.
+              Dán đường dẫn sản phẩm Shopee cần mua vào ô bên dưới để lấy link kích hoạt hoàn tiền. Tiền hoàn tự động ghi nhận vào ví và rút về tài khoản ngân hàng trong 3 ngày làm việc.
             </p>
           </div>
 
-          {/* Link Converter Tool Box */}
-          <div className="bg-white rounded-lg border border-gray-300 p-5 shadow-xs">
-            <form onSubmit={handleConvert} className="space-y-3">
-              <div className="flex justify-between items-center text-xs">
-                <label htmlFor="shopee-link-input" className="font-semibold text-gray-800">
-                  Đường dẫn sản phẩm Shopee:
-                </label>
+          {/* HIGHLIGHTED Link Converter Tool Box */}
+          <div className="bg-white rounded-2xl border-2 border-orange-500/50 shadow-xl shadow-orange-500/10 p-5 sm:p-7 relative ring-4 ring-orange-500/5 transition-all hover:border-orange-500/70">
+            <form onSubmit={handleConvert} className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-gray-100 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-600"></span>
+                  </span>
+                  <label htmlFor="shopee-link-input" className="font-bold text-gray-900 uppercase tracking-wide">
+                    Dán link Shopee để kích hoạt hoàn tiền
+                  </label>
+                </div>
                 {!user && (
                   <button
                     type="button"
                     onClick={() => onOpenAuth('login')}
-                    className="text-orange-600 hover:underline font-medium"
+                    className="text-orange-600 hover:text-orange-700 font-semibold cursor-pointer hover:underline text-left sm:text-right"
                   >
-                    Đăng nhập để ghi nhận tiền hoàn vào ví
+                    Đăng nhập để nhận hoàn tiền vào ví →
                   </button>
                 )}
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-2">
+              <div className="flex flex-col sm:flex-row gap-2.5">
                 <div className="relative flex-1">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-orange-600">
+                    <Search className="w-4 h-4" />
+                  </div>
                   <input
                     id="shopee-link-input"
                     type="text"
-                    placeholder="Dán link sản phẩm (ví dụ: https://shopee.vn/... hoặc https://s.shopee.vn/...)"
+                    placeholder="Dán link sản phẩm Shopee (ví dụ: https://shopee.vn/... hoặc https://s.shopee.vn/...)"
                     value={inputUrl}
                     onChange={(e) => {
                       setInputUrl(e.target.value);
                       setError('');
                     }}
-                    className="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 bg-white text-gray-900 placeholder:text-gray-400"
+                    className="w-full pl-10 pr-16 py-3 text-sm border-2 border-gray-200 hover:border-gray-300 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 bg-gray-50/40 hover:bg-white focus:bg-white text-gray-900 placeholder:text-gray-400 font-medium transition-all"
                   />
+                  {inputUrl && (
+                    <button
+                      type="button"
+                      onClick={() => setInputUrl('')}
+                      className="absolute inset-y-0 right-2 my-auto h-7 px-2 text-[11px] font-semibold text-gray-500 hover:text-gray-700 rounded bg-gray-100 hover:bg-gray-200 cursor-pointer"
+                    >
+                      Xóa
+                    </button>
+                  )}
                 </div>
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-6 py-2.5 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white rounded-md text-sm font-semibold transition-colors shrink-0 shadow-xs cursor-pointer"
+                  className="px-7 py-3 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 disabled:opacity-50 text-white rounded-xl text-sm font-bold transition-all shrink-0 shadow-md shadow-orange-600/25 cursor-pointer flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.99]"
                 >
-                  {loading ? 'Đang kiểm tra...' : 'Lấy link hoàn tiền'}
+                  {loading ? (
+                    <span>Đang kiểm tra...</span>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      <span>Lấy link hoàn tiền</span>
+                    </>
+                  )}
                 </button>
               </div>
 
-              {/* Quick sample links */}
-              <div className="flex flex-wrap items-center gap-1.5 pt-1 text-xs text-gray-500">
-                <span className="font-medium text-gray-600">Thử nhanh mẫu:</span>
+              {/* Quick sample link pills */}
+              <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-gray-500">
+                <span className="font-semibold text-gray-700">Thử nhanh mẫu:</span>
                 {[
                   { label: 'Điện thoại Honor X9b', url: 'https://shopee.vn/HONOR-X9b-5G-12GB-256GB-Chong-Roi-Vo-Toan-Dien-i.1234567.8901234' },
                   { label: 'Tai nghe Soundcore', url: 'https://shopee.vn/Tai-Nghe-Soundcore-Space-One-Chong-On-i.2345678.9012345' },
@@ -205,7 +231,7 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
                     key={idx}
                     type="button"
                     onClick={() => handleApplySample(s.url)}
-                    className="px-2 py-0.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded border border-gray-200 transition-colors"
+                    className="px-2.5 py-1 bg-gray-100 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-300 text-gray-700 rounded-full border border-gray-200 transition-colors cursor-pointer text-xs font-medium"
                   >
                     {s.label}
                   </button>
@@ -213,7 +239,7 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
               </div>
 
               {error && (
-                <div className="flex items-center gap-2 p-2.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded-md">
+                <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{error}</span>
                 </div>

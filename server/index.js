@@ -45,10 +45,12 @@ app.use(express.urlencoded({ extended: true }));
 
 // --- PUBLIC & REDIRECT ROUTES ---
 app.get('/api/links/go/:shortCode', linkController.redirectLink);
+app.get('/api/settings/public', adminController.getPublicSettings);
 
 // --- AUTH ROUTES ---
 app.post('/api/auth/register', authController.register);
 app.post('/api/auth/login', authController.login);
+app.post('/api/auth/google', authController.googleAuth);
 app.get('/api/auth/profile', authenticateToken, authController.getProfile);
 app.put('/api/auth/profile', authenticateToken, authController.updateProfile);
 

@@ -145,14 +145,6 @@ export default function Navbar({ activeTab, setActiveTab, onOpenAuth }) {
                       >
                         Yêu cầu rút tiền
                       </button>
-                      {isAdmin && (
-                        <button
-                          onClick={() => { setActiveTab('admin'); setDropdownOpen(false); }}
-                          className="w-full text-left py-1.5 px-2 hover:bg-gray-50 rounded text-purple-700 font-semibold"
-                        >
-                          Quản trị hệ thống
-                        </button>
-                      )}
                       <button
                         onClick={() => { logout(); setDropdownOpen(false); }}
                         className="w-full text-left py-1.5 px-2 hover:bg-gray-50 rounded text-red-600"
