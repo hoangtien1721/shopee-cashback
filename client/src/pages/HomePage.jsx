@@ -298,65 +298,32 @@ export default function HomePage({ onOpenAuth, onNavigate }) {
 
                     {/* Rates Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                      {convertedResult.product_price && convertedResult.product_price > 0 ? (
-                        <>
-                          {/* Box 1: Giá tham khảo */}
-                          <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-200">
-                            <div className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">
-                              Giá tham khảo
-                            </div>
-                            <div className="text-xl sm:text-2xl font-black text-gray-900 mt-0.5">
-                              {formatVND(convertedResult.product_price)}
-                            </div>
-                            <div className="text-[11px] text-gray-500 mt-1 font-medium">
-                              Ước tính theo mẫu sản phẩm
-                            </div>
-                          </div>
+                      {/* Box 1: Tỷ lệ hoàn tiền */}
+                      <div className="p-3.5 rounded-xl bg-orange-50/90 border border-orange-200">
+                        <div className="text-[10px] text-orange-800 uppercase font-bold tracking-wider">
+                          Tỷ lệ hoàn tiền
+                        </div>
+                        <div className="text-xl sm:text-2xl font-black text-orange-600 mt-0.5">
+                          {convertedResult.cashback_rate || 'Lên đến 10.5%'}
+                        </div>
+                        <div className="text-[11px] text-orange-900/80 mt-1 font-medium">
+                          Áp dụng cho mọi đơn hàng Shopee
+                        </div>
+                      </div>
 
-                          {/* Box 2: Tiền hoàn dự kiến */}
-                          <div className="p-3.5 rounded-xl bg-orange-50/90 border border-orange-200">
-                            <div className="text-[10px] text-orange-800 uppercase font-bold tracking-wider">
-                              Tiền hoàn dự kiến ({convertedResult.cashback_rate || '7.0%'})
-                            </div>
-                            <div className="text-xl sm:text-2xl font-black text-orange-600 mt-0.5">
-                              ~{formatVND(convertedResult.estimated_cashback)}
-                            </div>
-                            <div className="text-[11px] text-emerald-700 mt-1 font-medium flex items-center gap-1">
-                              <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                              <span>Tự động cộng ví sau khi nhận hàng</span>
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          {/* Box 1: Tỷ lệ hoàn tiền */}
-                          <div className="p-3.5 rounded-xl bg-orange-50/90 border border-orange-200">
-                            <div className="text-[10px] text-orange-800 uppercase font-bold tracking-wider">
-                              Tỷ lệ hoàn tiền
-                            </div>
-                            <div className="text-xl sm:text-2xl font-black text-orange-600 mt-0.5">
-                              {convertedResult.cashback_rate || 'Lên đến 10.5%'}
-                            </div>
-                            <div className="text-[11px] text-orange-900/80 mt-1 font-medium">
-                              Áp dụng cho mọi đơn hàng Shopee
-                            </div>
-                          </div>
-
-                          {/* Box 2: Trạng thái kích hoạt */}
-                          <div className="p-3.5 rounded-xl bg-emerald-50/90 border border-emerald-200">
-                            <div className="text-[10px] text-emerald-800 uppercase font-bold tracking-wider">
-                              Trạng thái kích hoạt
-                            </div>
-                            <div className="text-base sm:text-lg font-black text-emerald-700 mt-0.5 flex items-center gap-1.5">
-                              <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-                              <span>Đã sẵn sàng nhận tiền hoàn</span>
-                            </div>
-                            <div className="text-[11px] text-emerald-800/80 mt-1 font-medium">
-                              Tự động ghi nhận vào ví sau khi nhận hàng
-                            </div>
-                          </div>
-                        </>
-                      )}
+                      {/* Box 2: Trạng thái kích hoạt */}
+                      <div className="p-3.5 rounded-xl bg-emerald-50/90 border border-emerald-200">
+                        <div className="text-[10px] text-emerald-800 uppercase font-bold tracking-wider">
+                          Trạng thái kích hoạt
+                        </div>
+                        <div className="text-base sm:text-lg font-black text-emerald-700 mt-0.5 flex items-center gap-1.5">
+                          <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                          <span>Đã sẵn sàng nhận tiền hoàn</span>
+                        </div>
+                        <div className="text-[11px] text-emerald-800/80 mt-1 font-medium">
+                          Tự động ghi nhận vào ví sau khi nhận hàng
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

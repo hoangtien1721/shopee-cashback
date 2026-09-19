@@ -29,12 +29,8 @@ async function convertLink(req, res) {
     const cleanUrl = sanitizeShopeeUrl(rawUrl);
     const shortCode = generateShortCode(8);
 
-    // Tự động nhận diện giá nếu có trong văn bản copy hoặc người dùng nhập
-    const autoDetectedPrice = extractPriceFromText(url);
-    const effectivePrice = (price && parseInt(price, 10) > 0) ? parseInt(price, 10) : autoDetectedPrice;
-
-    // Phân tích thông tin sản phẩm và tính toán tiền hoàn dự kiến
-    const productInfo = await analyzeShopeeProduct(rawUrl, product_title, effectivePrice);
+    // Phân tích thông tin sản phẩm và tỷ lệ hoàn tiền theo ngành hàng chuẩn
+    const productInfo = await analyzeShopeeProduct(rawUrl, product_title);
 
     // Tạo link affiliate có gắn sub_id
     const { affiliateUrl, mode } = await generateAffiliateLink({
